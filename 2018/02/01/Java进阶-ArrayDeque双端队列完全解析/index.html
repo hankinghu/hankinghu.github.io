@@ -9,6 +9,7 @@
   <title>Java进阶--ArrayDeque双端队列完全解析 | hanking&#39;blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="ArrayDeque的基本用法1234567891011121314151617181920212223public class DequeDemo &amp;#123;	public static void main(String[] args) &amp;#123;		int []arr=&amp;#123;1,2,3,4,5,6,7,8&amp;#125;;				 ArrayDeque&amp;lt;Integer&amp;gt; aD">
+<meta name="keywords" content="-ArrayDeque -双端队列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java进阶--ArrayDeque双端队列完全解析">
 <meta property="og:url" content="http://yoursite.com/2018/02/01/Java进阶-ArrayDeque双端队列完全解析/index.html">
@@ -32,7 +33,7 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20170509201224732?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170509201510819?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170509201622571?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-02-01T09:38:40.777Z">
+<meta property="og:updated_time" content="2018-02-02T10:34:56.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java进阶--ArrayDeque双端队列完全解析">
 <meta name="twitter:description" content="ArrayDeque的基本用法1234567891011121314151617181920212223public class DequeDemo &amp;#123;	public static void main(String[] args) &amp;#123;		int []arr=&amp;#123;1,2,3,4,5,6,7,8&amp;#125;;				 ArrayDeque&amp;lt;Integer&amp;gt; aD">
@@ -193,6 +194,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="ArrayDeque的基本用法"><a href="#ArrayDeque的基本用法" class="headerlink" title="ArrayDeque的基本用法"></a><strong>ArrayDeque的基本用法</strong></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class DequeDemo &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		int []arr=&#123;1,2,3,4,5,6,7,8&#125;;		</span><br><span class="line">		 ArrayDeque&lt;Integer&gt; aDeque=new ArrayDeque&lt;Integer&gt;();</span><br><span class="line">		for(int i=0;i&lt;arr.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			if((i&amp;1)==0)</span><br><span class="line">			//如果i是偶数从队头加入，否则从队尾加入</span><br><span class="line">				aDeque.addFirst(arr[i]);</span><br><span class="line">			else</span><br><span class="line">				aDeque.addLast(arr[i]);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		while(!aDeque.isEmpty())</span><br><span class="line">		&#123;</span><br><span class="line">			aDeque.pollFirst();</span><br><span class="line">			aDeque.pollLast();//此处不严谨但是由于arr的元素恰好是偶数个，本例中也不会出现问题。</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>上面这段程序简单的演示了如果对双端队列的操作，下面给出上面代码的示意图：</p>
 <p><img src="http://img.blog.csdn.net/20170509154511372?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>上图是在执行完往双端队列加元素后，双端队列中元素的存储情况，由上图可以得出以下几点结论：<br><strong>①<code>ArrayDeque</code> 默认分配16个空间的数组。数组下标从0-15。</strong><br><strong>②<code>addFirst(arr[i])</code> 操作是将元素从数组的最后一个位置向前依次存放。</strong><br><strong>③<code>addLast(arr[i])</code> 操作是将元素从数组的第一个位置依次向后存放。</strong></p>
 <p><img src="http://img.blog.csdn.net/20170509155557918?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
@@ -278,6 +280,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">-ArrayDeque -双端队列</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -493,7 +506,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">-ArrayList -实现原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">-ArrayDeque -双端队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">-git安装 -fatal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">-hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">-Trie -前缀树</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">-算法 -动态规划</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">-算法 -存水量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">-读书 -季羡林</a>
               </li>
             
             <div class="clearfix"></div>
