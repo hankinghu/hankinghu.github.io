@@ -8,12 +8,13 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>http协议面试知识点总结 | hanking&#39;blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。 统一资源定位符URL在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。 基本U">
+  <meta name="description" content="前言最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。 统一资源定位符URL在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。">
+<meta name="keywords" content="-http -超文本传输协议资源 -面试">
 <meta property="og:type" content="article">
 <meta property="og:title" content="http协议面试知识点总结">
 <meta property="og:url" content="http://yoursite.com/2018/02/01/http协议面试知识点总结/index.html">
 <meta property="og:site_name" content="hanking&#39;blog">
-<meta property="og:description" content="前言最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。 统一资源定位符URL在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。 基本U">
+<meta property="og:description" content="前言最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。 统一资源定位符URL在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://img.blog.csdn.net/20170903161806400?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170903152340292?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -23,10 +24,10 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20170903163706834?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170903164729643?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170904144550197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-02-01T09:08:11.983Z">
+<meta property="og:updated_time" content="2018-02-02T10:40:02.570Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="http协议面试知识点总结">
-<meta name="twitter:description" content="前言最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。 统一资源定位符URL在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。 基本U">
+<meta name="twitter:description" content="前言最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。 统一资源定位符URL在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170903161806400?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
   
     <link rel="alternative" href="/atom.xml" title="hanking&#39;blog" type="application/atom+xml">
@@ -184,8 +185,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>最近在看面经的时候，发现大部分的公司面试的时候都会问到http协议，大部分的博客写的不是很系统，所以决定自己写一篇。</p>
-<h2 id="统一资源定位符URL"><a href="#统一资源定位符URL" class="headerlink" title="统一资源定位符URL"></a><strong>统一资源定位符URL</strong></h2><p>在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。</p>
-<p>基本URL包含模式（或称协议）、服务器名称（或IP地址）、路径和文件名，如“协议://授权/路径?查询”。完整的、带有授权部分的普通统一资源标志符语法看上去如下：协议://用户名:密码@子域名.域名.顶级域名:端口号/目录/文件名.文件后缀?参数=值#标志</p>
+<h2 id="统一资源定位符URL"><a href="#统一资源定位符URL" class="headerlink" title="统一资源定位符URL"></a><strong>统一资源定位符URL</strong></h2><p>在说HTTP协议之前必须要先了解URL（统一资源定位符）统一资源定位符是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。<br><a id="more"></a><br>基本URL包含模式（或称协议）、服务器名称（或IP地址）、路径和文件名，如“协议://授权/路径?查询”。完整的、带有授权部分的普通统一资源标志符语法看上去如下：协议://用户名:密码@子域名.域名.顶级域名:端口号/目录/文件名.文件后缀?参数=值#标志</p>
 <p><img src="http://img.blog.csdn.net/20170903161806400?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br><strong>第一部分</strong></p>
 <p>模式/协议（scheme）：它告诉浏览器如何处理将要打开的文件。最常用的模式是超文本传输协议（Hypertext Transfer Protocol，缩写为HTTP），这个协议可以用来访问网络。其他协议如下：</p>
 <p><strong>http——超文本传输协议资源</strong></p>
@@ -339,6 +339,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">-http -超文本传输协议资源 -面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -554,11 +565,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">-ArrayList -实现原理</a>
+                <a href="javascript:void(0)" class="js-tag color3">-ArrayDeque -双端队列</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">-ArrayDeque -双端队列</a>
+                <a href="javascript:void(0)" class="js-tag color2">-ArrayList -实现原理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -567,6 +578,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">-hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">-http -超文本传输协议资源 -面试</a>
               </li>
              
               <li class="article-tag-list-item">
