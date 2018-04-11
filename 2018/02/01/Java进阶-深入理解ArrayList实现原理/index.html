@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ArrayList,实现原理," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ArrayList简介ArrayList就是动态数组，用MSDN中的说法，就是Array的复杂版本，它提供了动态的增加和减少元素，实现了Collection和List接口，可以灵活的设置数组的大小。要注意的是ArrayList并不是线程安全的，因此一般建议在单线程中使用ArrayList。  ArrayList的继承关系123public class ArrayList&amp;lt;E&amp;gt;exten">
+<meta name="keywords" content="ArrayList,实现原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java进阶--深入理解ArrayList实现原理">
+<meta property="og:url" content="http://yoursite.com/2018/02/01/Java进阶-深入理解ArrayList实现原理/index.html">
+<meta property="og:site_name" content="hanking&#39;s blog">
+<meta property="og:description" content="ArrayList简介ArrayList就是动态数组，用MSDN中的说法，就是Array的复杂版本，它提供了动态的增加和减少元素，实现了Collection和List接口，可以灵活的设置数组的大小。要注意的是ArrayList并不是线程安全的，因此一般建议在单线程中使用ArrayList。  ArrayList的继承关系123public class ArrayList&amp;lt;E&amp;gt;exten">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20170519105333354?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-02-02T11:03:23.232Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java进阶--深入理解ArrayList实现原理">
+<meta name="twitter:description" content="ArrayList简介ArrayList就是动态数组，用MSDN中的说法，就是Array的复杂版本，它提供了动态的增加和减少元素，实现了Collection和List接口，可以灵活的设置数组的大小。要注意的是ArrayList并不是线程安全的，因此一般建议在单线程中使用ArrayList。  ArrayList的继承关系123public class ArrayList&amp;lt;E&amp;gt;exten">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170519105333354?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/01/Java进阶-深入理解ArrayList实现原理/"/>
+
+
+
+
+
+  <title>Java进阶--深入理解ArrayList实现原理 | hanking's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/hankinghu"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">hanking's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Hungry, Stay Foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/01/Java进阶-深入理解ArrayList实现原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hanking hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hanking's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java进阶--深入理解ArrayList实现原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-01T17:17:05+08:00">
+                2018-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="ArrayList简介"><a href="#ArrayList简介" class="headerlink" title="ArrayList简介"></a>ArrayList简介</h2><p>ArrayList就是动态数组，用MSDN中的说法，就是Array的复杂版本，它提供了动态的增加和减少元素，实现了Collection和List接口，可以灵活的设置数组的大小。要注意的是ArrayList并不是线程安全的，因此一般建议在单线程中使用ArrayList。</p>
+<hr>
+<h2 id="ArrayList的继承关系"><a href="#ArrayList的继承关系" class="headerlink" title="ArrayList的继承关系"></a>ArrayList的继承关系</h2><p><img src="http://img.blog.csdn.net/20170519105333354?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public class ArrayList&lt;E&gt;</span><br><span class="line">extends AbstractList&lt;E&gt;</span><br><span class="line">implements List&lt;E&gt;, RandomAccess, Cloneable, Serializable</span><br></pre></td></tr></table></figure></p>
+<p>由上可知ArrayList继承AbstractList 并且实现了List和RandomAccess，Cloneable, Serializable接口。<br><a id="more"></a></p>
+<hr>
+<h2 id="ArrayList的方法使用和源码解析"><a href="#ArrayList的方法使用和源码解析" class="headerlink" title="ArrayList的方法使用和源码解析"></a>ArrayList的方法使用和源码解析</h2><p><strong>①构造方法</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">//1-----------------------</span><br><span class="line">public ArrayList() &#123;</span><br><span class="line">        this(10);</span><br><span class="line">        //调用ArrayList(10) 默认初始化一个大小为10的object数组。</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">//2-------------------------</span><br><span class="line">public ArrayList(int initialCapacity) &#123;    </span><br><span class="line">        if (initialCapacity &lt; 0)</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+</span><br><span class="line">                                               initialCapacity);</span><br><span class="line">         //如果用户初始化大小小于0抛异常，否则新建一个用户初始值大小的object数组。                                      </span><br><span class="line">        this.elementData = new Object[initialCapacity];</span><br><span class="line">    &#125; </span><br><span class="line">    </span><br><span class="line">//3--------------------------</span><br><span class="line">public ArrayList(Collection&lt;? extends E&gt; c) &#123;</span><br><span class="line">        elementData = c.toArray();</span><br><span class="line">        size = elementData.length;</span><br><span class="line">        // 当c.toArray返回的不是object类型的数组时，进行下面转化。</span><br><span class="line">        if (elementData.getClass() != Object[].class)</span><br><span class="line">            elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>由上面三种构造方法可知，默认情况下使用ArrayList会生成一个大小为10的Object类型的数组。也可以调用<code>ArrayList(int initialCapacity)</code> 来初始化Object数组的大小。并且用户可以往ArrayList中传入一个容器只要这个容器是Collection类型的。调用<code>ArrayList(Collection&lt;? extends E&gt; c)</code>接口的时候会将容器数组化处理并将这个数组值赋给Object数组。</p>
+<p>实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">		ArrayList&lt;Integer&gt; list_2=new ArrayList&lt;Integer&gt;(20);</span><br><span class="line">		//list_2中添加元素</span><br><span class="line">		for(int i=0;i&lt;10;i++)</span><br><span class="line">			list_2.add(i);</span><br><span class="line">			</span><br><span class="line">		ArrayList&lt;Integer&gt; list_3=new ArrayList&lt;Integer&gt;(list_2);</span><br><span class="line">		//输出list_2中元素</span><br><span class="line">		for(Integer a:list_2)</span><br><span class="line">			System.out.print(a+&quot; &quot;);</span><br><span class="line">		//输出list_3中元素</span><br><span class="line">		for(Integer a:list_3)</span><br><span class="line">			System.out.print(a+&quot; &quot;);</span><br><span class="line">	&#125;</span><br><span class="line">//输出</span><br><span class="line">/*</span><br><span class="line">list_2 : 0 1 2 3 4 5 6 7 8 9 </span><br><span class="line">-----------------------</span><br><span class="line">list_3 : 0 1 2 3 4 5 6 7 8 9 </span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<hr>
+<p><strong>②indexOf(Object o)方法</strong><br>功能：查找某个元素在ArrayList中第一次出现的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public int indexOf(Object o) &#123;</span><br><span class="line">//ArrayList中的元素可以为null，如果为null返回null的下标</span><br><span class="line">      if (o == null) &#123;</span><br><span class="line">          for (int i = 0; i &lt; size; i++)</span><br><span class="line">              if (elementData[i]==null)</span><br><span class="line">                  return i;</span><br><span class="line">                  </span><br><span class="line">      &#125; else &#123;</span><br><span class="line">          for (int i = 0; i &lt; size; i++)</span><br><span class="line">              if (o.equals(elementData[i]))</span><br><span class="line">                  return i;</span><br><span class="line">      &#125;</span><br><span class="line">      //如果没有找到对应的元素返回-1。</span><br><span class="line">      return -1;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于indexof方法做几点说明：ArrayList中可以存放null元素，indexof是返回elementData数组中值相同的首个元素的下标，indexof中比较方法是equals而equals是比较元素的值，因此必须对null单独查找。如果未找到该元素则返回-1 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		ArrayList&lt;Integer&gt; list=new ArrayList&lt;Integer&gt;();</span><br><span class="line">		</span><br><span class="line">		list.add(1);		</span><br><span class="line">		list.add(2);		</span><br><span class="line">		list.add(null);		</span><br><span class="line">		list.add(2);</span><br><span class="line">		list.add(3);</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;null: &quot;+list.indexOf(null));</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);</span><br><span class="line">		System.out.println(&quot;2: &quot;+list.indexOf(2));</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);</span><br><span class="line">		System.out.println(&quot;4: &quot;+list.indexOf(4));</span><br><span class="line">	&#125;</span><br><span class="line">	//输出</span><br><span class="line">	/*</span><br><span class="line">	null: 2</span><br><span class="line">	-------------------------</span><br><span class="line">	2: 1</span><br><span class="line">	-------------------------</span><br><span class="line">	4: -1</span><br><span class="line">	*/</span><br></pre></td></tr></table></figure>
+<p><strong>③lastIndexOf(Object o)方法</strong><br>功能：查找某个元素在ArrayList中最后出现的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public int lastIndexOf(Object o) &#123;</span><br><span class="line">        if (o == null) &#123;</span><br><span class="line">        //如果o为null从后往前找到第一个为null的下标</span><br><span class="line">            for (int i = size-1; i &gt;= 0; i--)</span><br><span class="line">                if (elementData[i]==null)</span><br><span class="line">                    return i;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">        //从后往前找到第一个值为o的下标</span><br><span class="line">            for (int i = size-1; i &gt;= 0; i--)</span><br><span class="line">                if (o.equals(elementData[i]))</span><br><span class="line">                    return i;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面代码做几点说明：lastIndexOf(Object o)在ArrayList中从后往前找到第一个跟要查找值相同的元素的下标，因为是按值查找所以对于 null 要单独查找。如果未找到则返回-1；</p>
+<hr>
+<p> <strong>④get(int index)方法</strong><br>功能：返回ArrayList中指定下标为index的元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public E get(int index) &#123;</span><br><span class="line"> //检查index的值是否大于ArrayList的大小</span><br><span class="line">        rangeCheck(index);</span><br><span class="line"> //返回index下标的元素       </span><br><span class="line">        return elementData(index);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">   E elementData(int index) &#123;</span><br><span class="line">        return (E) elementData[index];</span><br><span class="line">    &#125;  </span><br><span class="line"> //这里值检查index &gt;= size的情况，因为index&lt;0时会自动抛出异常，所以并未检查index&lt;0的情况。</span><br><span class="line"> private void rangeCheck(int index) &#123;</span><br><span class="line">        if (index &gt;= size)</span><br><span class="line">            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>对上面代码做几点说明：上面代码中只检查了index&gt;=size的情况，在index<0的情况下也会抛出异常，只是这个异常是由系统抛出的。index>=size要检查的原因是有可能数组的大小大于index，然而有效里面的元素<code>&lt;index</code>这时不抛异常就会返回无效值。举个例子ArrayList的初始化大小为10，现在往里面放5个元素，如果index&gt;=5时，应该要抛出异常，而不是返回 null。因为null 是可以主动放在ArrayList中的。</0的情况下也会抛出异常，只是这个异常是由系统抛出的。index></p>
+<hr>
+<p><strong>⑤set(int index, E element)方法</strong><br>功能：将element放到ArrayList下标为index的位置，如果index<0或index>=size 抛异常，set(int index, E element)只能覆盖ArrayList中原来的元素，返回值为被覆盖的元素。</0或index></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//1</span><br><span class="line">public E set(int index, E element) &#123;</span><br><span class="line">//检查index是否小于size，如果不是抛异常</span><br><span class="line">        rangeCheck(index);</span><br><span class="line">        E oldValue = elementData(index);</span><br><span class="line">        elementData[index] = element;</span><br><span class="line">        //覆盖ArrayList中index上的元素。</span><br><span class="line">        return oldValue;</span><br><span class="line">        //返回被覆盖的元素。</span><br><span class="line">    &#125;</span><br><span class="line">//2    </span><br><span class="line"> private void rangeCheck(int index) &#123;</span><br><span class="line">        if (index &gt;= size)</span><br><span class="line">            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p><strong>⑥add(E e)方法</strong><br>功能：往ArrayList中添加元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//1-----------------------</span><br><span class="line">public boolean add(E e) &#123;</span><br><span class="line">        ensureCapacityInternal(size + 1);  // 加入元素前检查数组的容量是否足够</span><br><span class="line">        elementData[size++] = e;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">//2----------------------- </span><br><span class="line">private void ensureCapacityInternal(int minCapacity) &#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        // 如果添加元素后大于当前数组的长度，则进行扩容</span><br><span class="line">        if (minCapacity - elementData.length &gt; 0)</span><br><span class="line">            grow(minCapacity);</span><br><span class="line">    &#125; </span><br><span class="line">//3-----------------------  </span><br><span class="line">private void grow(int minCapacity) &#123;</span><br><span class="line">        // overflow-conscious code</span><br><span class="line">        int oldCapacity = elementData.length;</span><br><span class="line">        //将数组的长度增加原来数组的一半。</span><br><span class="line">        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);</span><br><span class="line">        if (newCapacity - minCapacity &lt; 0)</span><br><span class="line">            newCapacity = minCapacity;</span><br><span class="line">            //如果扩充一半后仍然不够，则 newCapacity = minCapacity;minCapacity实际元素的个数。</span><br><span class="line">        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)</span><br><span class="line">            newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">            //数组最大位2^32</span><br><span class="line">        // minCapacity is usually close to size, so this is a win:</span><br><span class="line">        elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>add方法比较复杂，涉及到扩充数组容量的问题。其中要弄清楚size和elementData.length的区别，size指的是数组中存放元素的个数，elementData.length表示数组的长度，当new一个ArrayList系统默认产生一个长度为10的elementData数组，elementData.length=10，但是由于elementData中还未放任何元素所有size=0。如果加入元素后数组大小不够会先进行扩容，每次扩容都将数组大小增大一半比如数组大小为10一次扩容后的大小为10+5=10;ArrayList的最大长度为 2^32 .</p>
+<hr>
+<p><strong>⑦add(int index, E element)方法</strong><br>功能：往ArrayList指定index上添加元素，添加元素后ArrayList的大小增1。index及以后的元素都会向后移一位。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">//1-------------------------</span><br><span class="line">public void add(int index, E element) &#123;</span><br><span class="line">        rangeCheckForAdd(index);</span><br><span class="line">//检查index的值是否在0到size之间，可以为size。</span><br><span class="line">        ensureCapacityInternal(size + 1);  // 看elementData的长度是否足够，不够扩容</span><br><span class="line"> //将elementData从index开始后面的元素往后移一位。       </span><br><span class="line">        System.arraycopy(elementData, index, elementData, index + 1,</span><br><span class="line">                         size - index);</span><br><span class="line">        elementData[index] = element;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line">//2-------------------------</span><br><span class="line">private void rangeCheckForAdd(int index) &#123;</span><br><span class="line">        if (index &gt; size || index &lt; 0)</span><br><span class="line">            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));</span><br><span class="line">    &#125;</span><br><span class="line"> //3-------------------------  </span><br><span class="line"> private void ensureCapacityInternal(int minCapacity) &#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        // overflow-conscious code</span><br><span class="line">        if (minCapacity - elementData.length &gt; 0)</span><br><span class="line">            grow(minCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>add(int index, E element)往指定index中加入元素，加入元素之前先检查数组的大小，如果小了在原来基础上增大一半，将ArrayList只能怪index及以后的元素往后移一位，将element放到index位置。</p>
+<hr>
+<p><strong>⑧remove(int index)方法</strong><br>功能：删除ArrayList指定位置的元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public E remove(int index) &#123;</span><br><span class="line">        rangeCheck(index);</span><br><span class="line">//如果index&gt;=size抛出异常</span><br><span class="line">        modCount++;</span><br><span class="line">        E oldValue = elementData(index);</span><br><span class="line">//获取删除元素的值</span><br><span class="line">        int numMoved = size - index - 1;</span><br><span class="line">        //将index后面所有的元素往前移一位。</span><br><span class="line">        if (numMoved &gt; 0)</span><br><span class="line">            System.arraycopy(elementData, index+1, elementData, index,</span><br><span class="line">                             numMoved);</span><br><span class="line">        elementData[--size] = null; // Let gc do its work</span><br><span class="line">//返回要删除的原数。</span><br><span class="line">        return oldValue;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>⑨remove(Object o)方法</strong><br>功能：删除ArrayList中值为o的元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public boolean remove(Object o) &#123;</span><br><span class="line">        if (o == null) &#123;</span><br><span class="line">            for (int index = 0; index &lt; size; index++)</span><br><span class="line">                if (elementData[index] == null) &#123;</span><br><span class="line">                    fastRemove(index);</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            for (int index = 0; index &lt; size; index++)</span><br><span class="line">                if (o.equals(elementData[index])) &#123;</span><br><span class="line">                    fastRemove(index);</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ArrayList/" rel="tag"># ArrayList</a>
+          
+            <a href="/tags/实现原理/" rel="tag"># 实现原理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/01/算法-动态规划-Dynamic-Programming-从菜鸟到老鸟/" rel="next" title="算法-动态规划 Dynamic Programming--从菜鸟到老鸟">
+                <i class="fa fa-chevron-left"></i> 算法-动态规划 Dynamic Programming--从菜鸟到老鸟
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/01/Java进阶-ArrayDeque双端队列完全解析/" rel="prev" title="Java进阶--ArrayDeque双端队列完全解析">
+                Java进阶--ArrayDeque双端队列完全解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">hanking hu</p>
+              <p class="site-description motion-element" itemprop="description">��ʿ�γ���ʿ����ɱ���ֶξ�����</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList简介"><span class="nav-number">1.</span> <span class="nav-text">ArrayList简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList的继承关系"><span class="nav-number">2.</span> <span class="nav-text">ArrayList的继承关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList的方法使用和源码解析"><span class="nav-number">3.</span> <span class="nav-text">ArrayList的方法使用和源码解析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hanking hu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
