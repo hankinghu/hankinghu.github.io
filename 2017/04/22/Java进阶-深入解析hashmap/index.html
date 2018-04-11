@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="算法,hashmap," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：  hash表的大小为7，将上面数组的元素，按mod 7分类如下图：  将这些点插入到hashmap中（简单hashmap）后如下图： 由上图可知：① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式">
+<meta name="keywords" content="算法,hashmap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java进阶--深入解析hashmap">
+<meta property="og:url" content="http://yoursite.com/2017/04/22/Java进阶-深入解析hashmap/index.html">
+<meta property="og:site_name" content="hanking&#39;s blog">
+<meta property="og:description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：  hash表的大小为7，将上面数组的元素，按mod 7分类如下图：  将这些点插入到hashmap中（简单hashmap）后如下图： 由上图可知：① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20170422163454791?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170422163927927?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170423093848356?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170422172635460?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-04-11T04:37:52.666Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java进阶--深入解析hashmap">
+<meta name="twitter:description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：  hash表的大小为7，将上面数组的元素，按mod 7分类如下图：  将这些点插入到hashmap中（简单hashmap）后如下图： 由上图可知：① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170422163454791?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/22/Java进阶-深入解析hashmap/"/>
+
+
+
+
+
+  <title>Java进阶--深入解析hashmap | hanking's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/hankinghu"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">hanking's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Hungry, Stay Foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/22/Java进阶-深入解析hashmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hanking hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hanking's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java进阶--深入解析hashmap</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-22T12:36:42+08:00">
+                2017-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="HashMap原理"><a href="#HashMap原理" class="headerlink" title="HashMap原理"></a><strong>HashMap原理</strong></h2><p>先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：</p>
+<p><img src="http://img.blog.csdn.net/20170422163454791?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>hash表的大小为7，将上面数组的元素，按mod 7分类如下图：</p>
+<p><img src="http://img.blog.csdn.net/20170422163927927?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>将这些点插入到hashmap中（简单hashmap）后如下图：</p>
+<p><img src="http://img.blog.csdn.net/20170423093848356?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>由上图可知：<br>① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式。</p>
+<p>②  当有多个key的值相同时，hashmap中只保存具有相同key的一个节点，也就是说相同key的节点会进行覆盖。</p>
+<p>③在hashmap中查找一个值，需要两次定位，先找到元素在数组的位置的链表上，然后在链表上查找，在HashMap中的第一次定位是由hash值确定的，第二次定位由key和hash值确定。</p>
+<p>④节点在找到所在的链后，插入链中是采用的是头插法，也就是新节点都插在链表的头部。</p>
+<p>⑤在hashmap中上图左边绿色的数组中也存放元素，新节点都是放在左边的table中的，这个在上图中为了形象的表现链表形式而没有使用。</p>
+<a id="more"></a>
+<h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a><strong>HashMap</strong></h2><p>上面只是简单的模拟了hashmap 真实的hashmap的基本思想和上面是一样的不过更加复杂。HashMap中的一个节点是一个Entity 类如下图：</p>
+<p><img src="http://img.blog.csdn.net/20170422172635460?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><strong>Entry是HashMap的内部类 包含四个值（next，key，value，hash），其中next是一个指向 Entry的指针，key相当于上面节点的值 value对应要保存的值，hash值由key产生，hashmap中要找到某个元素，需要根据hash值来求得对应数组中的位置，然后在由key来在链表中找Entry的位置。HashMap中的一切操作都是以Entry为基础进行的。HashMap的重点在于如何处理Entry。因此HashMap中的操作大部分都是调用Entry中的方法。可以说HashMap类本身只是提供了一个数组，和对Entry类中方法的一些封装。</strong></p>
+<p>下面从源码方面对 HashMap进行解析：</p>
+<h2 id="①HashMap的继承关系"><a href="#①HashMap的继承关系" class="headerlink" title="①HashMap的继承关系"></a><strong>①HashMap的继承关系</strong></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public class HashMap&lt;K,V&gt;</span><br><span class="line">    extends AbstractMap&lt;K,V&gt;</span><br><span class="line">    implements Map&lt;K,V&gt;, Cloneable, Serializable</span><br></pre></td></tr></table></figure>
+<p>从上面可以看到HashMap继承了AbstractMap , 并且实现了Cloneable, Serializable 接口。</p>
+<h2 id="②HashMap的构造函数"><a href="#②HashMap的构造函数" class="headerlink" title="②HashMap的构造函数"></a><strong>②HashMap的构造函数</strong></h2><p>下面的代码都是经过简化处理的代码，基本流程不变只是为了更好的理解修改和删除了一部分内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public HashMap(int initialCapacity, float loadFactor) &#123;</span><br><span class="line"></span><br><span class="line">/*initialCapacity 初始化hashmap中table表的大小，前面的图中左边绿色部分的数组就是table。loadFactor填装因子。</span><br><span class="line">*/</span><br><span class="line">        if (initialCapacity &lt; 0)</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal initial capacity: &quot; +</span><br><span class="line">                                               initialCapacity);</span><br><span class="line">  //如果初始化大小小于0，抛出异常                                          </span><br><span class="line">        if (initialCapacity &gt; 2^30)</span><br><span class="line">            initialCapacity = 2^30;</span><br><span class="line"> //HashMap 中table的最大值为2^30。         </span><br><span class="line">        </span><br><span class="line">        /* 生成一个比initialCapacity小的最大的2的n次方的值，这个值就是table的大小。table就是一个Entry类型的数组。</span><br><span class="line">        */</span><br><span class="line">        int capacity = 1;</span><br><span class="line">        while (capacity &lt; initialCapacity)</span><br><span class="line">            capacity &lt;&lt;= 1;</span><br><span class="line">        table = new Entry[capacity];</span><br><span class="line">//新建一个Entry类型的数组，就是前面图中左边的数组。不过数组的元素是Entry类型的。       </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码要做几点说明：</p>
+<p>①填装因子:loadFactor 表示填装因子的大小，简单的介绍一下填装因子：假设数组大小为20，每个放到数组中的元素mod 17，所有元素取模后放的位置是（0–16） 此时填装因子的大小为 17/20  ,装填因子就为0.85啦，你装填因子越小，说明你备用的内存空间越多，装填因子的选定，可以影响冲突的产生，装填因子越小，冲突越小。</p>
+<p>②HashMap初始化过程就是新建一个大小为capacity，类型为Entry的数组，Entry上面已经介绍过这个类，包含一个指针一个key，一个value，和一个hash。capacity是2的次幂，至于为什么是2的次幂后面会有介绍的。</p>
+<p>下面是另外两个构造函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> public HashMap(int initialCapacity) &#123;</span><br><span class="line">        HashMap(initialCapacity, 0.75);</span><br><span class="line">        //调用了上面的构造函数，只不过使用了默认的填装因子0.75</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">public HashMap() &#123;</span><br><span class="line">        HashMap(16, 0.75);</span><br><span class="line">        //生成一个table大小为16，填装因子0.75的HashMap</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>③由上可知如果用户直接使用HashMap（）构造函数来new一个HashMap 会生成一个大小为16，填装因子为0.75的 HashMap。</p>
+<h2 id="③HashMap中的put（key，value）函数"><a href="#③HashMap中的put（key，value）函数" class="headerlink" title="③HashMap中的put（key，value）函数"></a><strong>③HashMap中的put（key，value）函数</strong></h2><p>还是先上源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public V put(K key, V value) &#123;</span><br><span class="line">        if (key == null)</span><br><span class="line">            return putForNullKey(value);</span><br><span class="line">/*如果key为null则调用  putForNullKey(value) 函数 这个函数先在table[0]这条链上找有没有key 为null的元素如果有就覆盖，如果没有就新建一个new一个key为null，value=value hash=0，的Entry放在table[0]。</span><br><span class="line">*/     </span><br><span class="line">        int hash = hash(key);</span><br><span class="line">//获得key的hash值                        </span><br><span class="line">        int i = indexFor(hash, table.length);</span><br><span class="line">//由hash值确定放在table表中的那一条链上。类似于取模后放在数组中的哪个位置。        </span><br><span class="line">        for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) &#123;</span><br><span class="line">            Object k;</span><br><span class="line">            if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;</span><br><span class="line">                V oldValue = e.value;</span><br><span class="line">                e.value = value;</span><br><span class="line">                e.recordAccess(this);</span><br><span class="line">                return oldValue;</span><br><span class="line">     //如果链上原来有一个hash值相同，且key相同的则用新的value值进行覆盖。           </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">//否则利用hash，key，value，new一个Entry对象插入到链表中。</span><br><span class="line">        modCount++;</span><br><span class="line">        addEntry(hash, key, value, i);</span><br><span class="line">        return null;</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>对上面代码做几点说明：</p>
+<p>① HashMap中的key可以为 null ，此时hash=0，为什么key可以为null，因为HashMap中放的元素是Entry，而Entry包含了4个值（key，value，hash，next），key为 null 时不影响Entry映射到HashMap中。 </p>
+<p>②hash(key)，产生一个正整数，这个整数与key相关。这个hash（key）函数比较关键，后面会进行说明。</p>
+<p>③用户插入的（key，value）对不是直接放到HashMap中的，而是用（key，value）以及后面由key value产生的hash，new一个Entry对象后再插入到HashMap中的。</p>
+<p>④如果对应的链上有一个hash值个key相同的Entry则覆盖value值，不new Entry对象，如果没有会先new 一个对象在将其插到对应的链上。（其中可能会涉及到扩充HashMap）。</p>
+<p>下面看看hash（key）函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">final int hash(Object k) &#123;</span><br><span class="line">        int h = 0;</span><br><span class="line">        h ^= k.hashCode(); </span><br><span class="line">        //hashCode 返回一个整数值，这个值跟对象有关，不同对象的hashCode值一般不同。       </span><br><span class="line">        h ^= (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);</span><br><span class="line">        </span><br><span class="line">        return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>hash函数的作用是使hashmap里面的元素位置尽量的分布均匀些，尽量使得每个位置上的元素数量只有一个，那么当我们用hash算法求得这个位置的时候，马上就可以知道对应位置的元素就是我们要的，而不用再去遍历链表。</p>
+<h2 id="④HashMap中的get-Object-key-函数"><a href="#④HashMap中的get-Object-key-函数" class="headerlink" title="④HashMap中的get(Object key)函数"></a><strong>④HashMap中的get(Object key)函数</strong></h2><p>上源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public V get(Object key) &#123;</span><br><span class="line">        if (key == null)</span><br><span class="line">            return getForNullKey();</span><br><span class="line">//如果key==null则在table[0]这条链上找，如果找到返回value值，否则返回null ，因为key==null的都是放在table[0]这条链上的。          </span><br><span class="line">        Entry&lt;K,V&gt; entry = getEntry(key);</span><br><span class="line">//  getEntry(key)先key的hash值找到在数组的哪条链上，然后在链上查找key相同的如果没找到返回null    </span><br><span class="line">//如果找到了返回Entry的value值。  </span><br><span class="line">        return null == entry ? null : entry.getValue();        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">private V getForNullKey() &#123;</span><br><span class="line">        for (Entry&lt;K,V&gt; e = table[0]; e != null; e = e.next) &#123;</span><br><span class="line">            if (e.key == null)</span><br><span class="line">                return e.value;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">   Entry&lt;K,V&gt; getEntry(Object key) &#123;</span><br><span class="line">        int hash = (key == null) ? 0 : hash(key);</span><br><span class="line">        for (Entry&lt;K,V&gt; e = table[indexFor(hash, table.length)];</span><br><span class="line">             e != null;</span><br><span class="line">             e = e.next) &#123;</span><br><span class="line">            Object k;</span><br><span class="line">            if (e.hash == hash &amp;&amp;</span><br><span class="line">                ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))</span><br><span class="line">                return e;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码的几点说明</p>
+<p>① 通过key来链表中查找元素包括两个过程，先由hash找到链（hash由key产生，不同的key可能产生相同的hash值，相同的hash值放在同一条链上），再用key在链上找。</p>
+<p>② 如果key为null则只在table[0]和其链上查找，因为key为null都放在table[0]及其链上了。</p>
+<p>③因为在HashMap中查找到的是Entry对象，返回的值是Entry对象的value值。</p>
+<h2 id="重点Entry类"><a href="#重点Entry类" class="headerlink" title="重点Entry类"></a><strong>重点Entry类</strong></h2><p>其实理解HashMap最重要的在于理解Entry类，Entry类相当于链表中的一个节点，是HashMap操作的基础。下面主要从Entry类的几个方法来理解Entry类和HashMap的关系。</p>
+<h2 id="①Entry中的addEntry-hash-key-value-bucketIndex-函数"><a href="#①Entry中的addEntry-hash-key-value-bucketIndex-函数" class="headerlink" title="①Entry中的addEntry( hash, key, value, bucketIndex)函数"></a><strong>①Entry中的addEntry( hash, key, value, bucketIndex)函数</strong></h2><p>在HashMap中调用put（key，value）时，如果（key，value）是首次加入到HashMap中，就会调用<br>addEntry( hash, key, value, bucketIndex)函数，将其加入到table表对应的位置中（注意是table中，不是后面的链中，首次加入的元素都是采用的头插法）。下面是源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">void addEntry(int hash, K key, V value, int bucketIndex) &#123;</span><br><span class="line">        if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) &#123;</span><br><span class="line">            resize(2 * table.length);</span><br><span class="line">            //如果size的值超过了threshold，将table扩容两倍</span><br><span class="line">            hash = (null != key) ? hash(key) : 0;</span><br><span class="line">            //如果key为null则hash=0，否则hash函数利用key来产生hash值。</span><br><span class="line">            bucketIndex = indexFor(hash, table.length);</span><br><span class="line">            //bucketIndex就相当于取模后对应的table表中的哪个位置。</span><br><span class="line">        &#125;</span><br><span class="line">        //如果不存在容量不够问题则直接新建一个Entry对象。       </span><br><span class="line">        createEntry(hash, key, value, bucketIndex);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void createEntry(int hash, K key, V value, int bucketIndex) &#123;</span><br><span class="line">        Entry&lt;K,V&gt; e = table[bucketIndex];</span><br><span class="line">        //获得原来首位的Entry对象</span><br><span class="line">        table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">        //将新建的Entry对象放在链表的首位，然后用next指向原来放在首位的对象。也就是头插。</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码的几点说明：<br>①bucketIndex是由hash取模后对应于table表中的哪个位置。indexFor(hash, table.length)其实是一个取模函数。它的实现很简单 hash&amp; (length-1)，就是用hash值与上table表的长度减1。</p>
+<p>②并不是对每一个（key，value）对都产生一个Entry对象，只是（key，value）对首次放到HashMap中时，或者HashMap中没有相同的key时，才产生一个Entry对象，否则如果有相同的key则会直接将value值赋个Entry的value。</p>
+<p>③新产生的Entry都是放在了table中，也就是链表的首位，采用链表的头插法。</p>
+<h2 id="②HashMap中的keySet-函数"><a href="#②HashMap中的keySet-函数" class="headerlink" title="②HashMap中的keySet()函数"></a><strong>②HashMap中的keySet()函数</strong></h2><p>作用：返回HashMap中key的集合。keySet是HashMap中的内部类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public Set&lt;K&gt; keySet() &#123;</span><br><span class="line">        Set&lt;K&gt; ks = keySet;</span><br><span class="line">        return (ks != null ? ks : (keySet = new KeySet()));</span><br><span class="line">        //如果keyset为null就产生一个keyset对象。</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private final class KeySet extends AbstractSet&lt;K&gt; &#123;</span><br><span class="line">        public Iterator&lt;K&gt; iterator() &#123;</span><br><span class="line">            return newKeyIterator();</span><br><span class="line">            //newKeyIterator迭代器用于遍历key。</span><br><span class="line">        &#125;</span><br><span class="line">        public int size() &#123;</span><br><span class="line">            return size;</span><br><span class="line">            //返回keyset的大小</span><br><span class="line">        &#125;</span><br><span class="line">        public boolean contains(Object o) &#123;</span><br><span class="line">            return containsKey(o);</span><br><span class="line">            //是否包含某个key</span><br><span class="line">        &#125;</span><br><span class="line">        public boolean remove(Object o) &#123;</span><br><span class="line">            return HashMap.this.removeEntryForKey(o) != null;</span><br><span class="line">            //移除某个key的Entry。</span><br><span class="line">        &#125;</span><br><span class="line">        public void clear() &#123;</span><br><span class="line">            HashMap.this.clear();</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>keySet是用来遍历整个HashMap的，因此是十分重要的，下面做几点说明。<br>①keyset中有一个迭代器可以迭代的获取下一个key的值，通过key的值就可以获得Entry对象了。</p>
+<p>②对应key的迭代遍历是table表中由左向右，由上向下进行的，也就是先遍历table[0]这条链上的，然后遍历table[1]这条链上的依次往下进行。</p>
+<p>③newKeyIterator具体实现这里就不多介绍，只要知道上面的功能怎么实现就可以了。</p>
+<p>下面是利用keyset来实现遍历HashMap的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;Integer, Integer&gt; hashMap=new HashMap&lt;Integer, Integer&gt;();		</span><br><span class="line">for(int i=0;i&lt;20;i++)</span><br><span class="line">&#123;</span><br><span class="line">	hashMap.put(i, i+1);</span><br><span class="line">&#125;</span><br><span class="line">//新建一个hashmap往里面放入20个（key，value）对。</span><br><span class="line">Iterator&lt;Integer&gt; iterator= (Iterator&lt;Integer&gt;) hashMap.keySet().iterator();</span><br><span class="line">//获得keyset的iterator，进行遍历整个hashmap。</span><br><span class="line">while(iterator.hasNext())</span><br><span class="line">&#123;</span><br><span class="line">	Integer key=(Integer) iterator.next();</span><br><span class="line">	Integer val=(Integer)hashMap.get(key);</span><br><span class="line">	System.out.println(key+&quot;: &quot;+val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="②HashMap中的entrySet-函数"><a href="#②HashMap中的entrySet-函数" class="headerlink" title="②HashMap中的entrySet()函数"></a><strong>②HashMap中的entrySet()函数</strong></h2><p>作用：返回HashMap中Entry的集合。对于entrySet这里就不上源码了，举一个使用entrySet遍历HashMap的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;Integer, Integer&gt; hashMap=new HashMap&lt;Integer, Integer&gt;();		</span><br><span class="line">		for(int i=0;i&lt;20;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			hashMap.put(i, i+1);</span><br><span class="line">		&#125;</span><br><span class="line">		Iterator&lt;Entry&lt;Integer, Integer&gt;&gt; iterator=hashMap.entrySet().iterator();</span><br><span class="line">		while(iterator.hasNext())</span><br><span class="line">		&#123;</span><br><span class="line">			Entry  entry= iterator.next();</span><br><span class="line">			</span><br><span class="line">			System.out.println(entry.getKey()+&quot;: &quot;+entry.getValue());</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+<p>使用entrySet()函数遍历比keySet()函数遍历快，因为keySet()函数是先通过entrySet()求出key然后在通过key来遍历获得Entry的，所以速度比entrySet()慢很多。<br>参考文献：<br>①<a href="http://blog.csdn.net/jiary5201314/article/details/51439982" target="_blank" rel="noopener">http://blog.csdn.net/jiary5201314/article/details/51439982</a><br>②<a href="http://www.cnblogs.com/chenssy/p/3521565.html" target="_blank" rel="noopener">http://www.cnblogs.com/chenssy/p/3521565.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/hashmap/" rel="tag"># hashmap</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/27/笔试面试算法经典-最长括号匹配/" rel="prev" title="笔试面试算法经典--最长括号匹配">
+                笔试面试算法经典--最长括号匹配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">hanking hu</p>
+              <p class="site-description motion-element" itemprop="description">��ʿ�γ���ʿ����ɱ���ֶξ�����</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap原理"><span class="nav-number">1.</span> <span class="nav-text">HashMap原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap"><span class="nav-number">2.</span> <span class="nav-text">HashMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#①HashMap的继承关系"><span class="nav-number">3.</span> <span class="nav-text">①HashMap的继承关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#②HashMap的构造函数"><span class="nav-number">4.</span> <span class="nav-text">②HashMap的构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#③HashMap中的put（key，value）函数"><span class="nav-number">5.</span> <span class="nav-text">③HashMap中的put（key，value）函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#④HashMap中的get-Object-key-函数"><span class="nav-number">6.</span> <span class="nav-text">④HashMap中的get(Object key)函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重点Entry类"><span class="nav-number">7.</span> <span class="nav-text">重点Entry类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#①Entry中的addEntry-hash-key-value-bucketIndex-函数"><span class="nav-number">8.</span> <span class="nav-text">①Entry中的addEntry( hash, key, value, bucketIndex)函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#②HashMap中的keySet-函数"><span class="nav-number">9.</span> <span class="nav-text">②HashMap中的keySet()函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#②HashMap中的entrySet-函数"><span class="nav-number">10.</span> <span class="nav-text">②HashMap中的entrySet()函数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hanking hu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+</body>
+</html>
