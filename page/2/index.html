@@ -386,7 +386,7 @@
         
           <p>在求最长括号匹配之前先看看括号下面这个问题：</p>
 <h2 id="括号匹配"><a href="#括号匹配" class="headerlink" title="括号匹配"></a><strong>括号匹配</strong></h2><p>“ {（）}”这种是括号匹配，而 “{  ] ] { ” 这种就不是括号匹配。判断一个给定的括号字符串是否是匹配的。对于括号匹配这类的问题可以使用 Stack来处理：<strong>1</strong> . 当碰到”(  [  { “这些左括号就进栈。<strong>2</strong> . 如果碰到“) ] }”这些右括号时，如果栈为空，则肯定不匹配，返回false。如果栈不为空，则出栈比较两个括号是否匹配不匹配返回 false 。3 . 如果遍历完整个括号串后栈为空返回true，否则返回false。</p>
-<p>例：” ( { } ) [ ] “的匹配过程如下：<br></p>
+<p>例：” ( { } ) [ ] “的匹配过程如下：<br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/04/27/笔试面试算法经典-最长括号匹配/#more" rel="contents">
