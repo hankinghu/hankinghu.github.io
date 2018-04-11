@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/29/计算机网络-DNS完全解析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/01/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="hanking hu">
@@ -304,7 +304,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/29/计算机网络-DNS完全解析/" itemprop="url">计算机网络--DNS完全解析</a></h1>
+                <a class="post-title-link" href="/2018/02/01/hello-world/" itemprop="url">hexo入门</a></h1>
         
 
         <div class="post-meta">
@@ -316,8 +316,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-29T18:35:24+08:00">
-                2018-07-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-01T17:05:33+08:00">
+                2018-02-01
               </time>
             
 
@@ -339,8 +339,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/network/" itemprop="url" rel="index">
-                    <span itemprop="name">network</span>
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">git</span>
                   </a>
                 </span>
 
@@ -377,28 +377,15 @@
 
       
         
-          
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。</p>
-<h2 id="DNS的作用"><a href="#DNS的作用" class="headerlink" title="DNS的作用"></a><strong>DNS的作用</strong></h2><p>TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机赋唯一的主机名，用户可以用要通讯计算机或服务器的主机名而无需直接用IP地址进行通信。但在网络层必须使用IP地址进行，因此<strong>域名系统DNS</strong>（Domain Name System）是因特网使用的命名系统，用于把便于人们使用的主机名字（如baidu.com）转换为ｉｐ地址。计算机中ｃ盘下会存一个叫做hosts的数据库文件，如下图：</p>
-<p><img src="http://img.blog.csdn.net/20170729114447790?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<h2 id="域名解析器"><a href="#域名解析器" class="headerlink" title="域名解析器 "></a><strong>域名解析器 </strong></h2><p>进行域名查询的主机和软件叫做域名解析器。用户使用的工作站或电脑都属于解析器，当某个应用进程要把主机名解析为IP地址使，比如访问（baidu.com）时，就会调用域名解析程序，域名解析程序先访问本地的hosts数据库，大部分的域名解析都在本地进行，如果hosts里面有主机名与对应的IP地址则返回该IP地址。只有hosts里面没有的才会把待解析的域名放在DNS请求报文中以UDP用户报的形式发给本地域名解析器，本地域名解析器在查找域名后，把对应的IP地址放在回答报文中返回，应用进程获得目的的主机IP地址后就可以进行通信。若本地域名服务器不能回答该请求，则此域名服务器暂时成为DNS中的另一个客户，并向其他域名服务器发出查询请求。这个过程直到找到能够回答该请求的域名服务器为止。</p>
-<h2 id="域名的构成"><a href="#域名的构成" class="headerlink" title="域名的构成"></a><strong>域名的构成</strong></h2><p>域名是指为了识别主机名称和组织机构名称而采用的一种具有分层的名称。例如，华中科技大学的域名如下：hust.edu.cn　最左边的　hust　表示华中科技大学，edu表示教育机构，cn表示中国。dns的分层如下图所示：</p>
-<p><img src="http://img.blog.csdn.net/20170729145712521?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<h2 id="域名服务器"><a href="#域名服务器" class="headerlink" title="域名服务器"></a><strong>域名服务器</strong></h2><p>域名服务器是指管理域名的主机和相应的软件，它可以管理所在分层的域的相关信息。其所管理的分层叫做ZONE。如下图所示每一层都有一个域名服务器：</p>
-<p><img src="http://img.blog.csdn.net/20170729150132086?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>由上图可以得出以下三点结论</p>
-<p><strong>① 各个域的分层上都有各自的域名服务器</strong></p>
-<p><strong>②各层域名服务器都了解该层一下分层中所有域名服务器的IP地址。因此它们从根节点开始呈树状结构相互连接。</strong></p>
-<p><strong>③由于所有域名服务器都了解根域名服务器的IP地址，所以若从根开始按顺序追踪，可以访问世界上所有域名服务器的地址。</strong></p>
-<p><strong>根域名服务器</strong>：根域名服务器是最高层次的域名服务器，也是最重要的域名服务器。所有的根域名服务器都知道所有的顶级域名服务器的域名和IP地址。不管是哪一个本地域名服务器，若要对因特网上任何一个域名进行解析（转换为IP地址），只要自己无法解析，就首先要求助于根域名服务器。</p>
-<h2 id="DNS查询"><a href="#DNS查询" class="headerlink" title="DNS查询"></a><strong>DNS查询</strong></h2><p><img src="http://img.blog.csdn.net/20170729152422263?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>域名的查询过程注意两点：<br><strong>①主机向本地域名服务器的查询采用递归查询。所谓递归查询就是：如果主机所询问的本地域名服务器不知道被查询域名的IP地址，那么本地域名服务器就以DNS客户的身份，向根域名服务器继续发出查询请求报文，而不是让主机自己进行下一步查询。因此，递归查询返回的结果或者是要查询的IP地址，或者是报错，表示无法查询到所需的IP地址。</strong></p>
-<p><strong>②本地域名服务器向根域名服务器的查询通常采用迭代查询。迭代查询的特点是这样的：当根域名服务器收到本地域名服务器发出的迭代查询请求报文是，要么给出所要查询的IP地址，要么告诉域名服务器下一步要向哪个域名服务器进行查询。然后本地域名服务器继续进行下一步查询。</strong></p>
-<p><img src="http://img.blog.csdn.net/20170729153245255?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h2><p>其实弄懂DNS主要弄懂两点：<strong>①域名解析器</strong>  <strong>②域名服务器</strong></p>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><strong>参考文献</strong></h2><p><strong>1.计算机网络（第五版）–谢希仁</strong><br><strong>2.图解TCP/IP（第五版）–冈本</strong><br><strong>3.TCP/IP详解</strong><br><strong>4.<a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-dns-terminology-components-and-concepts" target="_blank" rel="noopener">https://www.digitalocean.com/community/tutorials/an-introduction-to-dns-terminology-components-and-concepts</a></strong></p>
-
-          
+          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/01/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -544,153 +531,6 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/02/01/Android及时通讯和sns开源项目汇总/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/01/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="hanking hu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hanking's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/01/hello-world/" itemprop="url">hexo入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-01T17:05:33+08:00">
-                2018-02-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/git/" itemprop="url" rel="index">
-                    <span itemprop="name">git</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/02/01/hello-world/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1182,6 +1022,154 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/29/计算机网络-DNS完全解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hanking hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hanking's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/29/计算机网络-DNS完全解析/" itemprop="url">计算机网络--DNS完全解析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-29T18:35:24+08:00">
+                2017-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/network/" itemprop="url" rel="index">
+                    <span itemprop="name">network</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。</p>
+<h2 id="DNS的作用"><a href="#DNS的作用" class="headerlink" title="DNS的作用"></a><strong>DNS的作用</strong></h2><p>TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机赋唯一的主机名，用户可以用要通讯计算机或服务器的主机名而无需直接用IP地址进行通信。但在网络层必须使用IP地址进行，因此<strong>域名系统DNS</strong>（Domain Name System）是因特网使用的命名系统，用于把便于人们使用的主机名字（如baidu.com）转换为ｉｐ地址。计算机中ｃ盘下会存一个叫做hosts的数据库文件，如下图：</p>
+<p><img src="http://img.blog.csdn.net/20170729114447790?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/29/计算机网络-DNS完全解析/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/15/算法-动态规划-Dynamic-Programming-从菜鸟到老鸟/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1547,25 +1535,14 @@
 
       
         
-          
-            <p>Java中的jdk是深入学习Java编程的宝库，其中各种方法的实现不仅可以深入了解 设计模式的应用，还可以看到jdk编写者如何优化代码（这种优化已经到达了一种极端的程度）对我们编写自己的代码是有十分重要的作用的。<strong>read the fucking source code</strong> 是成为一名优秀程序猿必须的经历。本博客通过分析Integer类的toString方法来看看jdk编写者如何编写他们的代码的。</p>
-<h2 id="Integer类的toString的基本用法"><a href="#Integer类的toString的基本用法" class="headerlink" title="Integer类的toString的基本用法"></a><strong>Integer类的toString的基本用法</strong></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public class IntegerDemo &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">		Integer OUT_MAX_VALUE=new Integer(Integer.MAX_VALUE+1);		</span><br><span class="line">		</span><br><span class="line">		Integer MAX_VALUE=new Integer(Integer.MAX_VALUE);</span><br><span class="line">		</span><br><span class="line">		Integer MIN_VALUE=new Integer(Integer.MIN_VALUE);</span><br><span class="line">		</span><br><span class="line">		Integer NOR_VALUE=new Integer(-128);</span><br><span class="line">		</span><br><span class="line">		Integer OUT_MIN_VALUE=new Integer(Integer.MIN_VALUE-1);</span><br><span class="line">				</span><br><span class="line">		System.out.println(&quot;max_val :&quot;+MAX_VALUE.toString());</span><br><span class="line">		System.out.println(&quot;max_val :&quot;+MAX_VALUE);</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);</span><br><span class="line">		System.out.println(&quot;out_max :&quot;+OUT_MAX_VALUE.toString());</span><br><span class="line">		System.out.println(&quot;out_min :&quot;+OUT_MIN_VALUE.toString());</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);		</span><br><span class="line">		System.out.println(&quot;min_val :&quot;+MIN_VALUE.toString());</span><br><span class="line">		System.out.println(&quot;min_val :&quot;+MIN_VALUE);</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);</span><br><span class="line">		System.out.println(&quot;nor_val :&quot;+NOR_VALUE.toString());</span><br><span class="line">		System.out.println(&quot;nor_val :&quot;+NOR_VALUE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">//输出</span><br><span class="line">/*</span><br><span class="line">max_val :2147483647</span><br><span class="line">max_val :2147483647</span><br><span class="line">-------------------------</span><br><span class="line">out_max :-2147483648</span><br><span class="line">out_min :2147483647</span><br><span class="line">-------------------------</span><br><span class="line">min_val :-2147483648</span><br><span class="line">min_val :-2147483648</span><br><span class="line">-------------------------</span><br><span class="line">nor_val :-128</span><br><span class="line">nor_val :-128</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
-<p>由上面可知直接输出Integer的值和调用Integer类的toString方法是一样的，其实直接打印一个对象的时候就是调用了该对象的toString方法。调用toString方法的时候其实输出的是Integer的value值，toString方法就是把int类型的value值转化为string类型输出。注意一下几点：</p>
-<p><strong>①Integer的value值从 Integer.MIN_VALUE 到 Integer.MAX_VALUE 如果超出了这个范围就会得到一些奇怪的结果。</strong></p>
-<p><strong>②在Integer.MAX_VALUE基础上加1输出的结果是个负值。</strong></p>
-<p><strong>③在Integer.MIN_VALUE基础上加1输出的结果是个正值。</strong></p>
-<h2 id="Integer类的toString的源码分析"><a href="#Integer类的toString的源码分析" class="headerlink" title="Integer类的toString的源码分析"></a><strong>Integer类的toString的源码分析</strong></h2><p>下面就深入看看Integer类的toString方法是如何实现的。还是直接上源码。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> public String toString() &#123;</span><br><span class="line">        return toString(value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//------------------------------</span><br><span class="line"></span><br><span class="line"> public static String toString(int i) &#123;</span><br><span class="line">        if (i == Integer.MIN_VALUE)</span><br><span class="line">            return &quot;-2147483648&quot;;</span><br><span class="line">         //如果是最小值直接返回其字符串因为Integer.MIN_VALUE=-2147483648 ，这样可以节省下面计算时间</span><br><span class="line">         //①</span><br><span class="line">        int size = (i &lt; 0) ? stringSize(-i) + 1 : stringSize(i);</span><br><span class="line">        //获取整数值的长度10进制</span><br><span class="line">        char[] buf = new char[size];</span><br><span class="line">        //②</span><br><span class="line">        getChars(i, size, buf);</span><br><span class="line">        //得到整数中的每一个字符</span><br><span class="line">        //③</span><br><span class="line">        return new String(buf, true);</span><br><span class="line">        //返回字符串值</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>上面的代码做几点说明：<br><strong>①如果Integer的value值正好是 Integer.MIN_VALUE 直接返回 “-2147483648” 节省时间。</strong><br><strong>②得到integer值的十进制的长度，如果负数先求出绝对值的长度，然后再长度加1，因为负数的符号位占一位。</strong><br><strong>③得到integer的value值的每一个字符。</strong><br><strong>④得到的字符新建字符串返回。</strong><br>下面看看 stringSize方法是怎样实现的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> static int stringSize(int x) &#123;</span><br><span class="line">        for (int i=0; ; i++)</span><br><span class="line">            if (x &lt;= sizeTable[i])</span><br><span class="line">                return i+1;</span><br><span class="line">                //看看x到底是几位数</span><br><span class="line">    &#125;</span><br><span class="line">//----------------------------------</span><br><span class="line">final static int [] sizeTable = &#123; 9, 99, 999, 9999, 99999, 999999, 9999999,</span><br><span class="line">                                      99999999, 999999999, Integer.MAX_VALUE &#125;;</span><br></pre></td></tr></table></figure>
-<p>上面的 stringSize 非常的巧妙的来整数的长度，首先定义了一个数组这个数组中分别存放了一位十进制的最大值，二位十进制的最大值，依次到 Integer.MAX_VALUE为止，因为integer的最大值为 Integer.MAX_VALUE，也就是说integer的最大长度为10位。注意：<br><strong>①stringSize(int x) 中的参数x 必须是正整数。</strong><br>下面用一个实例看看stringSize(int x)方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class IntegerDemo &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		int x=199;</span><br><span class="line">		</span><br><span class="line">		int max=Integer.MAX_VALUE;</span><br><span class="line">		</span><br><span class="line">		int out_max=Integer.MAX_VALUE+1;</span><br><span class="line">		</span><br><span class="line">		System.out.println(stringSize(x));</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);</span><br><span class="line">		System.out.println(stringSize(max));</span><br><span class="line">		System.out.println(&quot;-------------------------&quot;);</span><br><span class="line">		System.out.println(stringSize(out_max));		</span><br><span class="line">	&#125;</span><br><span class="line">	 final static int [] sizeTable = &#123; 9, 99, 999, 9999, 99999, 999999, 9999999,</span><br><span class="line">         99999999, 999999999, Integer.MAX_VALUE &#125;;</span><br><span class="line"></span><br><span class="line">	 static int stringSize(int x) &#123;</span><br><span class="line">		 for (int i=0; ; i++)</span><br><span class="line">			 if (x &lt;= sizeTable[i])</span><br><span class="line">				 return i+1;</span><br><span class="line">	 &#125;</span><br><span class="line">&#125;</span><br><span class="line">//输出</span><br><span class="line">/*</span><br><span class="line">3</span><br><span class="line">-------------------------</span><br><span class="line">10</span><br><span class="line">-------------------------</span><br><span class="line">1</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
-<p>上面的199小于999所以位数为3，而 out_max的值因为超过了 Integer.MAX_VALUE是个负数，得到的长度为1，因此求负数的长度时必须将其转化为正数来求，而且求出的长度还要加上一位来放‘ - ’。得到integer的value值的长度后使用 getChars 方法来得到value的每一位上的字符。下面看看这个getChars方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">static void getChars(int i, int index, char[] buf) &#123;</span><br><span class="line">        int q, r;</span><br><span class="line">        int charPos = index;</span><br><span class="line">        char sign = 0;</span><br><span class="line"></span><br><span class="line">        if (i &lt; 0) &#123;</span><br><span class="line">            sign = &apos;-&apos;;</span><br><span class="line">            i = -i;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 当i &gt;= 65536的时候每一次获取两位的char值。</span><br><span class="line">        while (i &gt;= 65536) &#123;</span><br><span class="line">            q = i / 100;</span><br><span class="line">        // really: r = i - (q * 100);</span><br><span class="line">            r = i - ((q &lt;&lt; 6) + (q &lt;&lt; 5) + (q &lt;&lt; 2));</span><br><span class="line">            //使用移位操作快速计算出q*100，2^6+2^5+2^2=64+32+4=100.</span><br><span class="line">            i = q;</span><br><span class="line">            buf [--charPos] = DigitOnes[r];</span><br><span class="line">            buf [--charPos] = DigitTens[r];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 当 i &lt;= 65536的时候每次只获取一位的char值</span><br><span class="line">        // assert(i &lt;= 65536, i);</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            q = (i * 52429) &gt;&gt;&gt; (16+3);</span><br><span class="line">            //q/10,2^19=524288, (double)52429/(1&lt;&lt;19)=0.10000038146972656</span><br><span class="line">            r = i - ((q &lt;&lt; 3) + (q &lt;&lt; 1));  // r = i-(q*10) ...</span><br><span class="line">            buf [--charPos] = digits [r];</span><br><span class="line">            i = q;</span><br><span class="line">            if (i == 0) break;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sign != 0) &#123;</span><br><span class="line">            buf [--charPos] = sign;</span><br><span class="line">            //如果是负数加上符号位</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">//--------------------------------------</span><br><span class="line">final static char [] DigitOnes = &#123;</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;,</span><br><span class="line">        &#125; ;</span><br><span class="line"></span><br><span class="line">//--------------------------------------</span><br><span class="line">final static char [] DigitTens = &#123;</span><br><span class="line">        &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;, &apos;0&apos;,</span><br><span class="line">        &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;, &apos;1&apos;,</span><br><span class="line">        &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;, &apos;2&apos;,</span><br><span class="line">        &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;, &apos;3&apos;,</span><br><span class="line">        &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;, &apos;4&apos;,</span><br><span class="line">        &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;, &apos;5&apos;,</span><br><span class="line">        &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;, &apos;6&apos;,</span><br><span class="line">        &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;, &apos;7&apos;,</span><br><span class="line">        &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;, &apos;8&apos;,</span><br><span class="line">        &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;, &apos;9&apos;,</span><br><span class="line">        &#125; ;</span><br></pre></td></tr></table></figure>
-<p>getChars方法也是十分的巧妙<br><strong>①在 i &gt;= 65536 的时候每次能够求出2位的char 值，求2位的char值时利用了两个数组 DigitOnes  和 DigitTens  就是在这两个数组的帮助下才能一次求出2位的char值下面就简单的说一下怎样利用这两个数组来分别求出个位和十位上的值的，假如现在得到两位数是 65，个位上是 5 要得到个位上的5，这时候不管十位是多少个位上一定是5，所以数组DigitOnes的  05，15，25，35，45，55，65，75，85，95位置上都是 5，这样不管是25，还是35 都能得到个位上的5。在来看看如何得到十位上的数，还是65，十位是6，所以DigitTens  的60，61，62，63，64，……69 位置上都是6。</strong></p>
-<p><strong>② q = (i * 52429) &gt;&gt;&gt; (16+3);这段代码其实就是q=i/10 ,其中 (double)52429/(1&lt;&lt;19)=0.10000038146972656也就是在int型的时候计算一个数的十分之1的精度是够的，可以看出jdk开发者的这种优化意识是非常强的。</strong><br><strong>③(q &lt;&lt; 6) + (q &lt;&lt; 5) + (q &lt;&lt; 2) 这段等价于q<em>100，因为 q</em>2^6+q<em>2^5+q</em>2^2=q<em>(64+32+4)=100q.这里为什么不直接使用q</em>100，而要使用位移操作，因为其实q*100底层还是要进行位移操作的，直接使用位移操作效率更高，这也给我们编程带来启示。能够优化的时候一定要优化。</strong> </p>
-
-          
+          <p>Java中的jdk是深入学习Java编程的宝库，其中各种方法的实现不仅可以深入了解 设计模式的应用，还可以看到jdk编写者如何优化代码（这种优化已经到达了一种极端的程度）对我们编写自己的代码是有十分重要的作用的。<strong>read the fucking source code</strong> 是成为一名优秀程序猿必须的经历。本博客通过分析Integer类的toString方法来看看jdk编写者如何编写他们的代码的。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/15/Java进阶-从源码理解Integer类的toString方法/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

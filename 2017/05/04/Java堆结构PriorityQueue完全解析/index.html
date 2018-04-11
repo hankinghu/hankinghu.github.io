@@ -93,7 +93,7 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20170504210713811?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170504210728030?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170504231009404?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-04-11T10:43:51.754Z">
+<meta property="og:updated_time" content="2018-04-11T10:46:33.320Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java堆结构PriorityQueue完全解析">
 <meta name="twitter:description" content="在堆排序这篇文章中千辛万苦的实现了堆的结构和排序，其实在Java 1.5版本后就提供了一个具备了小根堆性质的数据结构也就是优先队列PriorityQueue。下面详细了解一下PriorityQueue到底是如何实现小顶堆的，然后利用PriorityQueue实现大顶堆。 PriorityQueue的数据结构 PriorityQueue的逻辑结构是一棵完全二叉树，存储结构其实是一个数组。逻辑结构层次">
@@ -384,7 +384,7 @@
       
         <p>在<a href="http://blog.csdn.net/u013309870/article/details/68578011" target="_blank" rel="noopener">堆排序</a>这篇文章中千辛万苦的实现了堆的结构和排序，其实在Java 1.5版本后就提供了一个具备了小根堆性质的数据结构也就是优先队列PriorityQueue。下面详细了解一下PriorityQueue到底是如何实现小顶堆的，然后利用PriorityQueue实现大顶堆。</p>
 <h2 id="PriorityQueue的数据结构"><a href="#PriorityQueue的数据结构" class="headerlink" title="PriorityQueue的数据结构"></a><strong>PriorityQueue的数据结构</strong></h2><p><img src="http://img.blog.csdn.net/20170504222405428?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>PriorityQueue的逻辑结构是一棵完全二叉树，存储结构其实是一个数组。逻辑结构层次遍历的结果刚好是一个数组。</p>
+<p>PriorityQueue的逻辑结构是一棵完全二叉树，存储结构其实是一个数组。逻辑结构层次遍历的结果刚好是一个数组。<br><a id="more"></a></p>
 <h2 id="PriorityQueue的操作"><a href="#PriorityQueue的操作" class="headerlink" title="PriorityQueue的操作"></a><strong>PriorityQueue的操作</strong></h2><p><strong>①add(E e) 和 offer(E e) 方法</strong></p>
 <p>add(E e) 和 offer(E e) 方法都是向PriorityQueue中加入一个元素，其中add（）其实调用了offer（）方法如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>

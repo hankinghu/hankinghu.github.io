@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[计算机网络--DNS完全解析]]></title>
-    <url>%2F2018%2F07%2F29%2F%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-DNS%E5%AE%8C%E5%85%A8%E8%A7%A3%E6%9E%90%2F</url>
-    <content type="text"><![CDATA[前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。 DNS的作用TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机赋唯一的主机名，用户可以用要通讯计算机或服务器的主机名而无需直接用IP地址进行通信。但在网络层必须使用IP地址进行，因此域名系统DNS（Domain Name System）是因特网使用的命名系统，用于把便于人们使用的主机名字（如baidu.com）转换为ｉｐ地址。计算机中ｃ盘下会存一个叫做hosts的数据库文件，如下图： 域名解析器 进行域名查询的主机和软件叫做域名解析器。用户使用的工作站或电脑都属于解析器，当某个应用进程要把主机名解析为IP地址使，比如访问（baidu.com）时，就会调用域名解析程序，域名解析程序先访问本地的hosts数据库，大部分的域名解析都在本地进行，如果hosts里面有主机名与对应的IP地址则返回该IP地址。只有hosts里面没有的才会把待解析的域名放在DNS请求报文中以UDP用户报的形式发给本地域名解析器，本地域名解析器在查找域名后，把对应的IP地址放在回答报文中返回，应用进程获得目的的主机IP地址后就可以进行通信。若本地域名服务器不能回答该请求，则此域名服务器暂时成为DNS中的另一个客户，并向其他域名服务器发出查询请求。这个过程直到找到能够回答该请求的域名服务器为止。 域名的构成域名是指为了识别主机名称和组织机构名称而采用的一种具有分层的名称。例如，华中科技大学的域名如下：hust.edu.cn 最左边的 hust 表示华中科技大学，edu表示教育机构，cn表示中国。dns的分层如下图所示： 域名服务器域名服务器是指管理域名的主机和相应的软件，它可以管理所在分层的域的相关信息。其所管理的分层叫做ZONE。如下图所示每一层都有一个域名服务器： 由上图可以得出以下三点结论 ① 各个域的分层上都有各自的域名服务器 ②各层域名服务器都了解该层一下分层中所有域名服务器的IP地址。因此它们从根节点开始呈树状结构相互连接。 ③由于所有域名服务器都了解根域名服务器的IP地址，所以若从根开始按顺序追踪，可以访问世界上所有域名服务器的地址。 根域名服务器：根域名服务器是最高层次的域名服务器，也是最重要的域名服务器。所有的根域名服务器都知道所有的顶级域名服务器的域名和IP地址。不管是哪一个本地域名服务器，若要对因特网上任何一个域名进行解析（转换为IP地址），只要自己无法解析，就首先要求助于根域名服务器。 DNS查询 域名的查询过程注意两点：①主机向本地域名服务器的查询采用递归查询。所谓递归查询就是：如果主机所询问的本地域名服务器不知道被查询域名的IP地址，那么本地域名服务器就以DNS客户的身份，向根域名服务器继续发出查询请求报文，而不是让主机自己进行下一步查询。因此，递归查询返回的结果或者是要查询的IP地址，或者是报错，表示无法查询到所需的IP地址。 ②本地域名服务器向根域名服务器的查询通常采用迭代查询。迭代查询的特点是这样的：当根域名服务器收到本地域名服务器发出的迭代查询请求报文是，要么给出所要查询的IP地址，要么告诉域名服务器下一步要向哪个域名服务器进行查询。然后本地域名服务器继续进行下一步查询。 总结其实弄懂DNS主要弄懂两点：①域名解析器 ②域名服务器 参考文献1.计算机网络（第五版）–谢希仁2.图解TCP/IP（第五版）–冈本3.TCP/IP详解4.https://www.digitalocean.com/community/tutorials/an-introduction-to-dns-terminology-components-and-concepts]]></content>
+    <title><![CDATA[hexo入门]]></title>
+    <url>%2F2018%2F02%2F01%2Fhello-world%2F</url>
+    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
       <categories>
-        <category>network</category>
+        <category>git</category>
       </categories>
       <tags>
-        <tag>dns</tag>
-        <tag>域名</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -22,17 +21,6 @@
       <tags>
         <tag>即时通讯</tag>
         <tag>sns</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[hexo入门]]></title>
-    <url>%2F2018%2F02%2F01%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
-      <categories>
-        <category>git</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -70,6 +58,18 @@
         <tag>http</tag>
         <tag>超文本传输协议资源</tag>
         <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[计算机网络--DNS完全解析]]></title>
+    <url>%2F2017%2F07%2F29%2F%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-DNS%E5%AE%8C%E5%85%A8%E8%A7%A3%E6%9E%90%2F</url>
+    <content type="text"><![CDATA[前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。 DNS的作用TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机赋唯一的主机名，用户可以用要通讯计算机或服务器的主机名而无需直接用IP地址进行通信。但在网络层必须使用IP地址进行，因此域名系统DNS（Domain Name System）是因特网使用的命名系统，用于把便于人们使用的主机名字（如baidu.com）转换为ｉｐ地址。计算机中ｃ盘下会存一个叫做hosts的数据库文件，如下图： 域名解析器 进行域名查询的主机和软件叫做域名解析器。用户使用的工作站或电脑都属于解析器，当某个应用进程要把主机名解析为IP地址使，比如访问（baidu.com）时，就会调用域名解析程序，域名解析程序先访问本地的hosts数据库，大部分的域名解析都在本地进行，如果hosts里面有主机名与对应的IP地址则返回该IP地址。只有hosts里面没有的才会把待解析的域名放在DNS请求报文中以UDP用户报的形式发给本地域名解析器，本地域名解析器在查找域名后，把对应的IP地址放在回答报文中返回，应用进程获得目的的主机IP地址后就可以进行通信。若本地域名服务器不能回答该请求，则此域名服务器暂时成为DNS中的另一个客户，并向其他域名服务器发出查询请求。这个过程直到找到能够回答该请求的域名服务器为止。 域名的构成域名是指为了识别主机名称和组织机构名称而采用的一种具有分层的名称。例如，华中科技大学的域名如下：hust.edu.cn 最左边的 hust 表示华中科技大学，edu表示教育机构，cn表示中国。dns的分层如下图所示： 域名服务器域名服务器是指管理域名的主机和相应的软件，它可以管理所在分层的域的相关信息。其所管理的分层叫做ZONE。如下图所示每一层都有一个域名服务器： 由上图可以得出以下三点结论 ① 各个域的分层上都有各自的域名服务器 ②各层域名服务器都了解该层一下分层中所有域名服务器的IP地址。因此它们从根节点开始呈树状结构相互连接。 ③由于所有域名服务器都了解根域名服务器的IP地址，所以若从根开始按顺序追踪，可以访问世界上所有域名服务器的地址。 根域名服务器：根域名服务器是最高层次的域名服务器，也是最重要的域名服务器。所有的根域名服务器都知道所有的顶级域名服务器的域名和IP地址。不管是哪一个本地域名服务器，若要对因特网上任何一个域名进行解析（转换为IP地址），只要自己无法解析，就首先要求助于根域名服务器。 DNS查询 域名的查询过程注意两点：①主机向本地域名服务器的查询采用递归查询。所谓递归查询就是：如果主机所询问的本地域名服务器不知道被查询域名的IP地址，那么本地域名服务器就以DNS客户的身份，向根域名服务器继续发出查询请求报文，而不是让主机自己进行下一步查询。因此，递归查询返回的结果或者是要查询的IP地址，或者是报错，表示无法查询到所需的IP地址。 ②本地域名服务器向根域名服务器的查询通常采用迭代查询。迭代查询的特点是这样的：当根域名服务器收到本地域名服务器发出的迭代查询请求报文是，要么给出所要查询的IP地址，要么告诉域名服务器下一步要向哪个域名服务器进行查询。然后本地域名服务器继续进行下一步查询。 总结其实弄懂DNS主要弄懂两点：①域名解析器 ②域名服务器 参考文献1.计算机网络（第五版）–谢希仁2.图解TCP/IP（第五版）–冈本3.TCP/IP详解4.https://www.digitalocean.com/community/tutorials/an-introduction-to-dns-terminology-components-and-concepts]]></content>
+      <categories>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>dns</tag>
+        <tag>域名</tag>
       </tags>
   </entry>
   <entry>
