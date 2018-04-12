@@ -79,22 +79,22 @@
 
 
 
-<meta name="description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：  hash表的大小为7，将上面数组的元素，按mod 7分类如下图：  将这些点插入到hashmap中（简单hashmap）后如下图： 由上图可知：① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式">
+<meta name="description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：">
 <meta name="keywords" content="算法,hashmap">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java进阶--深入解析hashmap">
 <meta property="og:url" content="http://yoursite.com/2017/04/22/Java进阶-深入解析hashmap/index.html">
 <meta property="og:site_name" content="hanking&#39;s blog">
-<meta property="og:description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：  hash表的大小为7，将上面数组的元素，按mod 7分类如下图：  将这些点插入到hashmap中（简单hashmap）后如下图： 由上图可知：① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式">
+<meta property="og:description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://img.blog.csdn.net/20170422163454791?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170422163927927?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170423093848356?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170422172635460?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-04-11T06:07:39.505Z">
+<meta property="og:updated_time" content="2018-04-12T07:21:51.326Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java进阶--深入解析hashmap">
-<meta name="twitter:description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：  hash表的大小为7，将上面数组的元素，按mod 7分类如下图：  将这些点插入到hashmap中（简单hashmap）后如下图： 由上图可知：① hashmap是用链地址法进行处理，多个key 对应于表中的一个索引位置的时候进行链地址处理，hashmap其实就是一个数组+链表的形式">
+<meta name="twitter:description" content="HashMap原理先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170422163454791?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -356,6 +356,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/22/Java进阶-深入解析hashmap/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/22/Java进阶-深入解析hashmap/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -380,7 +391,7 @@
       
 
       
-        <h2 id="HashMap原理"><a href="#HashMap原理" class="headerlink" title="HashMap原理"></a><strong>HashMap原理</strong></h2><p>先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：</p>
+        <h2 id="HashMap原理"><a href="#HashMap原理" class="headerlink" title="HashMap原理"></a><strong>HashMap原理</strong></h2><p>先以一个简单的例子来理解hashmap的原理。在Java中先随机产生一个大小为20的数组如下：<br><a id="more"></a></p>
 <p><img src="http://img.blog.csdn.net/20170422163454791?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 <p>hash表的大小为7，将上面数组的元素，按mod 7分类如下图：</p>
 <p><img src="http://img.blog.csdn.net/20170422163927927?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
@@ -390,7 +401,6 @@
 <p>③在hashmap中查找一个值，需要两次定位，先找到元素在数组的位置的链表上，然后在链表上查找，在HashMap中的第一次定位是由hash值确定的，第二次定位由key和hash值确定。</p>
 <p>④节点在找到所在的链后，插入链中是采用的是头插法，也就是新节点都插在链表的头部。</p>
 <p>⑤在hashmap中上图左边绿色的数组中也存放元素，新节点都是放在左边的table中的，这个在上图中为了形象的表现链表形式而没有使用。</p>
-<a id="more"></a>
 <h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a><strong>HashMap</strong></h2><p>上面只是简单的模拟了hashmap 真实的hashmap的基本思想和上面是一样的不过更加复杂。HashMap中的一个节点是一个Entity 类如下图：</p>
 <p><img src="http://img.blog.csdn.net/20170422172635460?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 <p><strong>Entry是HashMap的内部类 包含四个值（next，key，value，hash），其中next是一个指向 Entry的指针，key相当于上面节点的值 value对应要保存的值，hash值由key产生，hashmap中要找到某个元素，需要根据hash值来求得对应数组中的位置，然后在由key来在链表中找Entry的位置。HashMap中的一切操作都是以Entry为基础进行的。HashMap的重点在于如何处理Entry。因此HashMap中的操作大部分都是调用Entry中的方法。可以说HashMap类本身只是提供了一个数组，和对Entry类中方法的一些封装。</strong></p>
@@ -506,6 +516,16 @@
           
 
   
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
 
 
 
@@ -557,7 +577,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -568,7 +588,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/page.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -579,7 +599,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/tags.html">
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -793,6 +813,26 @@
 
   
 
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/04/22/Java进阶-深入解析hashmap/';
+          this.page.identifier = '2017/04/22/Java进阶-深入解析hashmap/';
+          this.page.title = 'Java进阶--深入解析hashmap';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
 
   
 

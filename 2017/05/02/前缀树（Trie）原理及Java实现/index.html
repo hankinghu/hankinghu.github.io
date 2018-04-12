@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="前缀树的结构Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图： 上图是一棵Trie树，表示了关键字集合{“a”, “to”, “tea”, “ted”, “ten”, “i”, “in”, “inn”} 。从上图可以归纳出Trie树的基本性质：①根节点不包含字符，除根节点外的每一个子节点都包含一个字符。②从根节点到某一个节点，路径上经过的字符连接">
+<meta name="description" content="前缀树的结构Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图：">
 <meta name="keywords" content="Trie,前缀树">
 <meta property="og:type" content="article">
 <meta property="og:title" content="前缀树（Trie）原理及Java实现">
 <meta property="og:url" content="http://yoursite.com/2017/05/02/前缀树（Trie）原理及Java实现/index.html">
 <meta property="og:site_name" content="hanking&#39;s blog">
-<meta property="og:description" content="前缀树的结构Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图： 上图是一棵Trie树，表示了关键字集合{“a”, “to”, “tea”, “ted”, “ten”, “i”, “in”, “inn”} 。从上图可以归纳出Trie树的基本性质：①根节点不包含字符，除根节点外的每一个子节点都包含一个字符。②从根节点到某一个节点，路径上经过的字符连接">
+<meta property="og:description" content="前缀树的结构Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图：">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://img.blog.csdn.net/20170502145925107?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-04-11T06:07:18.922Z">
+<meta property="og:updated_time" content="2018-04-12T07:22:41.774Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="前缀树（Trie）原理及Java实现">
-<meta name="twitter:description" content="前缀树的结构Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图： 上图是一棵Trie树，表示了关键字集合{“a”, “to”, “tea”, “ted”, “ten”, “i”, “in”, “inn”} 。从上图可以归纳出Trie树的基本性质：①根节点不包含字符，除根节点外的每一个子节点都包含一个字符。②从根节点到某一个节点，路径上经过的字符连接">
+<meta name="twitter:description" content="前缀树的结构Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图：">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170502145925107?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -353,6 +353,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/02/前缀树（Trie）原理及Java实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/02/前缀树（Trie）原理及Java实现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -377,8 +388,7 @@
       
 
       
-        <h2 id="前缀树的结构"><a href="#前缀树的结构" class="headerlink" title="前缀树的结构"></a><strong>前缀树的结构</strong></h2><p>Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图：</p>
-<p><img src="http://img.blog.csdn.net/20170502145925107?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>上图是一棵Trie树，表示了关键字集合{“a”, “to”, “tea”, “ted”, “ten”, “i”, “in”, “inn”} 。从上图可以归纳出Trie树的基本性质：<br><strong>①根节点不包含字符，除根节点外的每一个子节点都包含一个字符。</strong><br><strong>②从根节点到某一个节点，路径上经过的字符连接起来，为该节点对应的字符串。</strong><br><strong>③每个节点的所有子节点包含的字符互不相同。</strong><br><strong>④从第一字符开始有连续重复的字符只占用一个节点，比如上面的to，和ten，中重复的单词t只占用了一个节点。</strong><br><a id="more"></a></p>
+        <h2 id="前缀树的结构"><a href="#前缀树的结构" class="headerlink" title="前缀树的结构"></a><strong>前缀树的结构</strong></h2><p>Trie树，又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构。如下图：<br><a id="more"></a><br><img src="http://img.blog.csdn.net/20170502145925107?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>上图是一棵Trie树，表示了关键字集合{“a”, “to”, “tea”, “ted”, “ten”, “i”, “in”, “inn”} 。从上图可以归纳出Trie树的基本性质：<br><strong>①根节点不包含字符，除根节点外的每一个子节点都包含一个字符。</strong><br><strong>②从根节点到某一个节点，路径上经过的字符连接起来，为该节点对应的字符串。</strong><br><strong>③每个节点的所有子节点包含的字符互不相同。</strong><br><strong>④从第一字符开始有连续重复的字符只占用一个节点，比如上面的to，和ten，中重复的单词t只占用了一个节点。</strong></p>
 <h2 id="前缀树的应用"><a href="#前缀树的应用" class="headerlink" title="前缀树的应用"></a><strong>前缀树的应用</strong></h2><p><strong>1、前缀匹配</strong><br><strong>2、字符串检索</strong><br><strong>3、词频统计</strong><br><strong>4、字符串排序</strong></p>
 <p>下面看看怎样使用前缀树来实现前缀匹配的。</p>
 <h2 id="前缀匹配"><a href="#前缀匹配" class="headerlink" title="前缀匹配"></a><strong>前缀匹配</strong></h2><p>了解了前缀树的结构后，就可以利用前缀树的性质来解决现实中的问题。比如说查找一个字符串数组中是否含有前缀单词，什么是前缀单词：上面的 in，就是 inn 的前缀单词。如果有十几万条单词，并且每个单词的长度都是5-10以内，这样必定存在大量重复的字符，因此利用前缀树来求解不仅速度快而且空间复杂度也比较好。<br><strong>①定义前缀树结构</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class Tries&#123;</span><br><span class="line">	Boolean isTrie ;</span><br><span class="line">	HashMap&lt;Character, Tries&gt; children=new HashMap&lt;Character, Tries&gt;();	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -462,6 +472,16 @@
           
 
   
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
 
 
 
@@ -513,7 +533,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -524,7 +544,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/page.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -535,7 +555,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/tags.html">
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -749,6 +769,26 @@
 
   
 
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/05/02/前缀树（Trie）原理及Java实现/';
+          this.page.identifier = '2017/05/02/前缀树（Trie）原理及Java实现/';
+          this.page.title = '前缀树（Trie）原理及Java实现';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
 
   
 

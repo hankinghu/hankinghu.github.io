@@ -79,23 +79,23 @@
 
 
 
-<meta name="description" content="前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。 DNS的作用TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机">
+<meta name="description" content="前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。">
 <meta name="keywords" content="dns,域名">
 <meta property="og:type" content="article">
 <meta property="og:title" content="计算机网络--DNS完全解析">
 <meta property="og:url" content="http://yoursite.com/2017/07/29/计算机网络-DNS完全解析/index.html">
 <meta property="og:site_name" content="hanking&#39;s blog">
-<meta property="og:description" content="前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。 DNS的作用TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机">
+<meta property="og:description" content="前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://img.blog.csdn.net/20170729114447790?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170729145712521?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170729150132086?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170729152422263?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170729153245255?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-04-11T10:46:10.591Z">
+<meta property="og:updated_time" content="2018-04-12T07:22:18.430Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="计算机网络--DNS完全解析">
-<meta name="twitter:description" content="前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。 DNS的作用TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机">
+<meta name="twitter:description" content="前言前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170729114447790?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -357,6 +357,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/29/计算机网络-DNS完全解析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/29/计算机网络-DNS完全解析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -381,10 +392,9 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>前几天，因为要申请一个VR方面的专利在网上找参考资料，准备基于Oculus的sdk进行二次开发。突然发现进不了Oculus的官方网站，后面发现是电脑网络设置中的DNS在作妖。最近几天正好看计算机网络的方面的书，就抽时间把DNS总结一下。<br><a id="more"></a></p>
 <h2 id="DNS的作用"><a href="#DNS的作用" class="headerlink" title="DNS的作用"></a><strong>DNS的作用</strong></h2><p>TCP／IP网络中要求每一个互连的计算机都具有其唯一的IP地址，并基于这个IP地址进行通信。由于IP地址是有一串数字组成不好记，因此为每一台计算机赋唯一的主机名，用户可以用要通讯计算机或服务器的主机名而无需直接用IP地址进行通信。但在网络层必须使用IP地址进行，因此<strong>域名系统DNS</strong>（Domain Name System）是因特网使用的命名系统，用于把便于人们使用的主机名字（如baidu.com）转换为ｉｐ地址。计算机中ｃ盘下会存一个叫做hosts的数据库文件，如下图：</p>
 <p><img src="http://img.blog.csdn.net/20170729114447790?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<a id="more"></a>
 <h2 id="域名解析器"><a href="#域名解析器" class="headerlink" title="域名解析器 "></a><strong>域名解析器 </strong></h2><p>进行域名查询的主机和软件叫做域名解析器。用户使用的工作站或电脑都属于解析器，当某个应用进程要把主机名解析为IP地址使，比如访问（baidu.com）时，就会调用域名解析程序，域名解析程序先访问本地的hosts数据库，大部分的域名解析都在本地进行，如果hosts里面有主机名与对应的IP地址则返回该IP地址。只有hosts里面没有的才会把待解析的域名放在DNS请求报文中以UDP用户报的形式发给本地域名解析器，本地域名解析器在查找域名后，把对应的IP地址放在回答报文中返回，应用进程获得目的的主机IP地址后就可以进行通信。若本地域名服务器不能回答该请求，则此域名服务器暂时成为DNS中的另一个客户，并向其他域名服务器发出查询请求。这个过程直到找到能够回答该请求的域名服务器为止。</p>
 <h2 id="域名的构成"><a href="#域名的构成" class="headerlink" title="域名的构成"></a><strong>域名的构成</strong></h2><p>域名是指为了识别主机名称和组织机构名称而采用的一种具有分层的名称。例如，华中科技大学的域名如下：hust.edu.cn　最左边的　hust　表示华中科技大学，edu表示教育机构，cn表示中国。dns的分层如下图所示：</p>
 <p><img src="http://img.blog.csdn.net/20170729145712521?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
@@ -475,6 +485,16 @@
           
 
   
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
 
 
 
@@ -526,7 +546,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -537,7 +557,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/page.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -548,7 +568,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/tags.html">
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -762,6 +782,26 @@
 
   
 
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/07/29/计算机网络-DNS完全解析/';
+          this.page.identifier = '2017/07/29/计算机网络-DNS完全解析/';
+          this.page.title = '计算机网络--DNS完全解析';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
 
   
 
