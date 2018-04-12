@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2017/05/19/Java%E8%BF%9B%E9%98%B6-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3ArrayList%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</loc>
+    
+    <lastmod>2018-04-12T07:25:45.197Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2017/05/02/%E5%89%8D%E7%BC%80%E6%A0%91%EF%BC%88Trie%EF%BC%89%E5%8E%9F%E7%90%86%E5%8F%8AJava%E5%AE%9E%E7%8E%B0/</loc>
     
     <lastmod>2018-04-12T07:22:41.774Z</lastmod>
@@ -96,13 +103,6 @@
     <loc>http://yoursite.com/tags/tags.html</loc>
     
     <lastmod>2018-04-11T05:15:23.471Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2017/05/19/Java%E8%BF%9B%E9%98%B6-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3ArrayList%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</loc>
-    
-    <lastmod>2018-04-11T04:31:14.816Z</lastmod>
     
   </url>
   
