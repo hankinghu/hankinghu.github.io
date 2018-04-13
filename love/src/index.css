@@ -1,0 +1,82 @@
+body {
+  background-color: #000;
+}
+
+.toolbar {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  z-index: 9999;
+  margin: 10px;
+}
+
+.toolbar > a {
+  display: none;
+  margin: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 20px;
+  transition: 1s color;
+  moz-transition: 1s color; /* Firefox 4 */
+  -webkit-transition: 1s color; /* Safari 和 Chrome */
+  -o-transition: 1s color; /* Opera */
+  color: #c2c2c2;
+}
+
+.toolbar > a:hover {
+  color: #fff;
+}
+
+.counter {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  z-index: 9999;
+}
+
+.counter > span {
+  display: none;
+  font-family: "Comic Sans MS";
+  font-size: 80px;
+  font-weight: bolder;
+  color: #c2c2c2;
+  margin: 30px;
+}
+
+.loading-container {
+  display: none;
+  background-color: #000;
+  height:100%;
+  width:100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  display: table;
+}
+
+.loading-inner {
+  padding: 0;
+  margin: 0;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.loading-inner > .loading {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.loading > .message {
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.loading > .indicator {
+  width: 100px;
+  height: 100px;
+  margin: 40px auto;
+}
