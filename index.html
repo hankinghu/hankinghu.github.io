@@ -285,6 +285,229 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/16/Java并发编程-深入理解volatile关键字/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hanking hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hanking's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/16/Java并发编程-深入理解volatile关键字/" itemprop="url">Java并发编程--深入理解volatile关键字</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-16T20:44:50+08:00">
+                2018-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/16/Java并发编程-深入理解volatile关键字/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/16/Java并发编程-深入理解volatile关键字/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/04/16/Java并发编程-深入理解volatile关键字/" class="leancloud_visitors" data-flag-title="Java并发编程--深入理解volatile关键字">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">热度&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+				 <span >520℃</span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。</p>
+<hr>
+<h2 id="Java-memory-model（Java内存模型）"><a href="#Java-memory-model（Java内存模型）" class="headerlink" title="Java memory model（Java内存模型）"></a><strong>Java memory model（Java内存模型）</strong></h2><p>在讲volatile关键字之前必须先了解一下Java内存模型，如果不了解Java内存模型volatile关键字无从讲起。先看看下面的图。</p>
+<p><img src="http://img.blog.csdn.net/20170612150920693?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>由上图可以看出来，在JMM中内存分为两部分一个是<strong>Main Memory（主内存）</strong>另一个是<strong>Working Memory（工作内存）</strong>。</p>
+<p><strong>Main Memory（主内存）：</strong>主要存放Variable，此处的变量（Variable）与Java编程中所说的变量有所区别，它包括了<strong>实例字段</strong>、 <strong>静态字段</strong>和<strong>构成数组对象的元素</strong>，但不包括局部变量与方法参数，因为后者是线程私有的，不会被共享，自然就不会存在竞争问题。 Java内存模型规定了所有的变量都存储在主内存（Main Memory）中（此处的主内存与介绍物理硬件时的主内存名字一样，两者也可以互相类比，但此处仅是虚拟机内存的一部分）。</p>
+<p><strong>Working Memory（工作内存）：</strong>每条线程还有自己的工作内存（Working Memory，可与处理器高速缓存类比），线程的工作内存中保存了被该线程使用到的变量的主内存副本拷贝，线程对变量的所有操作（读取、 赋值等）都必须在工作内存中进行，而不能直接读写主内存中的变量。不同的线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递均需要通过主内存来完成。线程、 主内存、 工作内存三者的交互关系如下图所示。</p>
+<p><img src="http://img.blog.csdn.net/20170612152446316?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>也就是说Java每条线程所拥有的工作内存通过，sava和load指令与主内存进行交互。另外还需要了解的一点是：Java的一切指令操作都是基于栈的（stack），因此工作内存中又包含以下两个部分：</p>
+<p><img src="http://img.blog.csdn.net/20170612153623473?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><strong>①操作数栈（Operand Stack）</strong>对应上图左边的stack，也常称为操作栈，它是一个后入先出栈。 当一个方法刚刚开始执行的时候，这个方法的操作数栈是空的，在方法的执行过程中，会有各种字节码指令往操作数栈中写入和提取内容，也就是出栈/入栈操作。 例如，在做算术运算的时候是通过操作数栈来进行的，又或者在调用其他方法的时候是通过操作数栈来进行参数传递的。</p>
+<p>举个例子，整数加法的字节码指令iadd在运行的时候操作数栈中最接近栈顶的两个元素已经存入了两个int型的数值，当执行这个指令时，会将这两个int值出栈并相加，然后将相加的结果入栈。</p>
+<p><strong>②局部变量表（Local Variable Table）</strong>对应上图右边的variable是一组变量值存储空间，用于存放方法参数和方法内部定义的局部变量。 在Java程序编译为Class文件时，就在方法的Code属性的max_locals数据项中确定了该方法所需要分配的局部变量表的最大容量。<br>    关于JMM（Java内存模型）部分，只需要了解这么多。</p>
+<h2 id="内存间交互操作"><a href="#内存间交互操作" class="headerlink" title="内存间交互操作"></a><strong>内存间交互操作</strong></h2><p>关于主内存与工作内存之间具体的交互协议，即一个变量如何从主内存拷贝到工作内存、 如何从工作内存同步回主内存之类的实现细节，Java内存模型中定义了以下8种操作来完成，虚拟机实现时必须保证下面提及的每一种操作都是原子的、 不可再分的。</p>
+<p><strong>①    lock（锁定）：</strong>作用于主内存的变量，它把一个变量标识为一条线程独占的状态。</p>
+<p><strong>②unlock（解锁）：</strong>作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。</p>
+<p><strong>③read（读取）：</strong>作用于主内存的变量，它把一个变量的值从主内存传输到线程的工作内存中，以便随后的load动作使用。</p>
+<p><strong>④load（载入）：</strong>作用于工作内存的变量，它把read操作从主内存中得到的变量值放入工作内存的变量副本中。</p>
+<p><strong>⑤use（使用）：</strong>作用于工作内存的变量，它把工作内存中一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值的字节码指令时将会执行这个操作。</p>
+<p><strong>⑥assign（赋值）：</strong>作用于工作内存的变量，它把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。</p>
+<p><strong>⑦store（存储）：</strong>作用于工作内存的变量，它把工作内存中一个变量的值传送到主内存中，以便随后的write操作使用。</p>
+<p><strong>⑧write（写入）：</strong>作用于主内存的变量，它把store操作从工作内存中得到的变量的值放入主内存的变量中。</p>
+<p>如果要把一个变量从主内存复制到工作内存，那就要顺序地执行read和load操作，如果要把变量从工作内存同步回主内存，就要顺序地执行store和write操作。 注意，Java内存模型只要求上述两个操作必须按顺序执行，而没有保证是连续执行。 也就是说，read与load之间、 store与write之间是可插入其他指令的，如对主内存中的变量a、 b进行访问时，一种可能出现顺序是read a、read b、load b、load a 关于内存间交互操作的更多细节请参考<strong>深入理解Java虚拟机第二版（393页）。</strong></p>
+<h2 id="并发原则"><a href="#并发原则" class="headerlink" title="并发原则"></a><strong>并发原则</strong></h2><p><strong>①原子性（Atomicity）</strong>：原子性：即一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。由Java内存模型来直接保证的原子性变量操作包括read、 load、assign、 use、 store和write，我们大致可以认为基本数据类型的访问读写是具备原子性的。</p>
+<p><strong>②可见性（Visibility）</strong>：可见性是指当一个线程修改了共享变量的值，其他线程能够立即得知这个修改。</p>
+<p><strong>③有序性（Ordering）</strong>：Java程序中天然的有序性可以总结为一句话：如果在本线程内观察，所有的操作都是有序的；如果在一个线程中观察另一个线程，所有的操作都是无序的。 前半句是指“线程内表现为串行的语义”（Within-Thread As-If-Serial Semantics），后半句是指“指令重排序”现象和“工作内存与主内存同步延迟”现象。</p>
+<h1 id="Java-Volatile-Keyword"><a href="#Java-Volatile-Keyword" class="headerlink" title="Java Volatile Keyword"></a><strong>Java Volatile Keyword</strong></h1><p>先看一段英文解释：</p>
+<p>The Java volatile keyword is used to mark a Java variable as “being stored in main memory”. More precisely that means, that every read of a volatile variable will be read from the computer’s main memory, and not from the CPU cache（working memory）, and that every write to a volatile variable will be written to main memory, and not just to the CPU cache（working memory）.</p>
+<p>简单对上面的这段话做两点说明：<br><strong>①线程读取一个被volatile修饰的变量时直接从main memory（主内存）中读取，而不是从working memory中读取。</strong><br><strong>②线程写对一个volatile变量进行写操作时，直接写入到main memory（主内存）中，而不仅仅是写到working memory中。</strong></p>
+<h2 id="volatile确保可见性"><a href="#volatile确保可见性" class="headerlink" title="volatile确保可见性"></a><strong>volatile确保可见性</strong></h2><p>先看下面的一个实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">private  static boolean stop = false;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//线程1</span><br><span class="line">		new Thread()&#123;</span><br><span class="line">			@Override</span><br><span class="line">			public void run() &#123;			</span><br><span class="line">					while(!stop)					</span><br><span class="line">						System.out.println(&quot;is not stop!&quot;);								</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;.start();</span><br><span class="line">		//线程2</span><br><span class="line">		new Thread()&#123;</span><br><span class="line">			@Override</span><br><span class="line">			public void run() &#123;</span><br><span class="line">				stop=true;</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;.start();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码是很典型的一段代码，很多人在中断线程时可能都会采用这种标记办法。但是事实上，这段代码会完全运行正确么？即一定会将线程中断么？不一定，也许在大多数时候，这个代码能够把线程中断，但是也有可能会导致无法中断线程（虽然这个可能性很小，但是只要一旦发生这种情况就会造成死循环了）。</p>
+<p>　　下面解释一下这段代码为何有可能导致无法中断线程。在前面已经解释过，每个线程在运行过程中都有自己的工作内存，那么线程1在运行的时候，会将stop变量的值拷贝一份放在自己的工作内存当中。</p>
+<p>　　那么当线程2更改了stop变量的值之后，但是还没来得及写入主存当中，线程2转去做其他事情了，那么线程1由于不知道线程2对stop变量的更改，因此还会一直循环下去。</p>
+<p>　　但是用volatile修饰之后就变得不一样了：</p>
+<p>　　第一：使用volatile关键字会强制将修改的值立即写入主存；</p>
+<p>　　第二：使用volatile关键字的话，当线程2进行修改时，会导致线程1的工作内存中缓存变量stop的缓存行无效（反映到硬件层的话，就是CPU的L1或者L2缓存中对应的缓存行无效）；</p>
+<p>　　第三：由于线程1的工作内存中缓存变量stop的缓存行无效，所以线程1再次读取变量stop的值时会去主存读取。</p>
+<p>　　那么在线程2修改stop值时（当然这里包括2个操作，修改线程2工作内存中的值，然后将修改后的值写入内存），会使得线程1的工作内存中缓存变量stop的缓存行无效，然后线程1读取时，发现自己的缓存行无效，它会等待缓存行对应的主存地址被更新之后，然后去对应的主存读取最新的值。那么线程1读取到的就是最新的正确的值。</p>
+<h2 id="volatile确保有序性"><a href="#volatile确保有序性" class="headerlink" title="volatile确保有序性"></a><strong>volatile确保有序性</strong></h2><p>在前面提到volatile关键字能禁止指令重排序，所以volatile能在一定程度上保证有序性。</p>
+<p>　　volatile关键字禁止指令重排序有两层意思：</p>
+<p>　　1）当程序执行到volatile变量的读操作或者写操作时，在其前面的操作的更改肯定全部已经进行，且结果已经对后面的操作可见；在其后面的操作肯定还没有进行；</p>
+<p>　　2）在进行指令优化时，不能将在对volatile变量访问的语句放在其后面执行，也不能把volatile变量后面的语句放到其前面执行。</p>
+<p>　　举个简单的例子：
+　　</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//x、y为非volatile变量</span><br><span class="line">//flag为volatile变量</span><br><span class="line"> </span><br><span class="line">x = 2;        //语句1</span><br><span class="line">y = 0;        //语句2</span><br><span class="line">flag = true;  //语句3</span><br><span class="line">x = 4;         //语句4</span><br><span class="line">y = -1;       //语句5</span><br></pre></td></tr></table></figure>
+<p>由于flag变量为volatile变量，那么在进行指令重排序的过程的时候，不会将语句3放到语句1、语句2前面，也不会讲语句3放到语句4、语句5后面。但是要注意语句1和语句2的顺序、语句4和语句5的顺序是不作任何保证的。</p>
+<p>　　并且volatile关键字能保证，执行到语句3时，语句1和语句2必定是执行完毕了的，且语句1和语句2的执行结果对语句3、语句4、语句5是可见的。</p>
+<h2 id="volatile不能保证原子性"><a href="#volatile不能保证原子性" class="headerlink" title="volatile不能保证原子性"></a><strong>volatile不能保证原子性</strong></h2><p>为了说明volatile不保证原子性先举一个经典的例子，这个例子来自于<strong>深入理解Java虚拟机第二版（395页）</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class VolatileTest&#123;</span><br><span class="line"></span><br><span class="line">	public static volatile int race=0；</span><br><span class="line"></span><br><span class="line">	public static void increase（）&#123;</span><br><span class="line">		race++；</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	private static final int THREADS_COUNT=20；</span><br><span class="line">	</span><br><span class="line">	public static void main（String[]args）&#123;</span><br><span class="line">	</span><br><span class="line">		Thread[]threads=new Thread[THREADS_COUNT]；</span><br><span class="line">		</span><br><span class="line">		for（int i=0；i＜THREADS_COUNT；i++）&#123;</span><br><span class="line">		</span><br><span class="line">			threads[i]=new Thread（new Runnable（）&#123;</span><br><span class="line">			</span><br><span class="line">			@Override</span><br><span class="line">			public void run（）&#123;</span><br><span class="line">				for（int i=0；i＜10000；i++）&#123;</span><br><span class="line">						increase（）；</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		）；</span><br><span class="line">		threads[i].start（）；</span><br><span class="line">	&#125;</span><br><span class="line">	//等待所有累加线程都结束</span><br><span class="line">	while（Thread.activeCount（）＞1）</span><br><span class="line">		Thread.yield（）；</span><br><span class="line">		System.out.println（race）；</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码发起了20个线程，每个线程对race变量进行10000次自增操作，如果这段代码能够正确并发的话，最后输出的结果应该是200000。 读者运行完这段代码之后，并不会获得期望的结果，而且会发现每次运行程序，输出的结果都不一样，都是一个小于200000的数字。<br>先来看看上面代码中increase（）方法的字节码，然后对照着JMM来分析一下为什么会出现上面程序运行的结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public static void increase（）；</span><br><span class="line">Code：</span><br><span class="line">Stack=2，Locals=0，Args_size=0</span><br><span class="line">0：getstatic#13；//从主存中直接获取race的值放入到操作栈中。</span><br><span class="line">3：iconst_1	//将常数1放入操作栈中，</span><br><span class="line">4：iadd	//获取操作栈中的两个值相加</span><br><span class="line">5：putstatic#13；//将操作栈中的race的值直接放入到主存中。</span><br><span class="line">8：return</span><br><span class="line">LineNumberTable：</span><br><span class="line">line 14：0</span><br><span class="line">line 15：8</span><br></pre></td></tr></table></figure>
+<p>对于上面的字节码，给出一个运行图：</p>
+<p><img src="http://img.blog.csdn.net/20170612172706122?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>将Race=1放入到stack中，将常量1放入到stack中：<br><img src="http://img.blog.csdn.net/20170612173221020?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>将stack中的两个数相加，并将结果放回到Main Memory中：<br><img src="http://img.blog.csdn.net/20170612173303688?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>有上面的过程图可知，当执行将Race=1放入到stack中，将常量1放入到stack中时，其他线程可能抢占jvm此时还未执行后面的加法操作，比如说两个线程同时执行了前面的两步，将race=1放到了stack中，然后又执行加操作，此时虽然执行了两次加操作，race的值却是2，所以综合可知volatile并不能保证原子性。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><strong>参考文献</strong></h1><p><a href="http://download.csdn.net/detail/u013309870/9807327" target="_blank" rel="noopener">深入理解Java虚拟机第二版</a><br><a href="http://www.cnblogs.com/dolphin0520/p/3920373.html" target="_blank" rel="noopener">http://www.cnblogs.com/dolphin0520/p/3920373.html</a><br><a href="http://jeremymanson.blogspot.sg/2008/11/what-volatile-means-in-java.html" target="_blank" rel="noopener">http://jeremymanson.blogspot.sg/2008/11/what-volatile-means-in-java.html</a><br><a href="https://stackoverflow.com/questions/4885570/what-does-volatile-mean-in-java" target="_blank" rel="noopener">https://stackoverflow.com/questions/4885570/what-does-volatile-mean-in-java</a><br><a href="http://tutorials.jenkov.com/java-concurrency/volatile.html" target="_blank" rel="noopener">http://tutorials.jenkov.com/java-concurrency/volatile.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+	<div>
+		
+	</div>
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/15/读书感想/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1790,178 +2013,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/29/经典算法-最大存水量问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="hanking hu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hanking's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/29/经典算法-最大存水量问题/" itemprop="url">经典算法--最大存水量问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-29T17:44:18+08:00">
-                2017-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/04/29/经典算法-最大存水量问题/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/29/经典算法-最大存水量问题/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2017/04/29/经典算法-最大存水量问题/" class="leancloud_visitors" data-flag-title="经典算法--最大存水量问题">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">热度&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-				 <span >520℃</span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><strong>题目</strong>：给出一个数组代表围柱的高度，求能围柱的最大的水量，例如数组{ 5，2，3，2，4 }，最大水量为5。</p>
-<p>如下图：黄色部分为围柱，绿色部分是能够围住的水，图中围柱的高度依次为 5，2，3，2，4最多能围住的水量是5。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/04/29/经典算法-最大存水量问题/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-	<div>
-		
-	</div>
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2016,7 +2067,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2027,7 +2078,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/page.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2038,7 +2089,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/tags.html">
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
