@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="前言一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。  Java memory model（Java内存模型）在讲vo">
+<meta name="description" content="前言一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。">
 <meta name="keywords" content="volatile,Java并发编程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发编程--深入理解volatile关键字">
 <meta property="og:url" content="http://yoursite.com/2018/04/16/Java并发编程-深入理解volatile关键字/index.html">
 <meta property="og:site_name" content="hanking&#39;s blog">
-<meta property="og:description" content="前言一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。  Java memory model（Java内存模型）在讲vo">
+<meta property="og:description" content="前言一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://img.blog.csdn.net/20170612150920693?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170612152446316?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -93,10 +93,10 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20170612172706122?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170612173221020?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170612173303688?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-04-16T12:46:11.130Z">
+<meta property="og:updated_time" content="2018-04-16T12:48:30.097Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程--深入理解volatile关键字">
-<meta name="twitter:description" content="前言一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。  Java memory model（Java内存模型）在讲vo">
+<meta name="twitter:description" content="前言一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170612150920693?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -411,8 +411,7 @@
 
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>一个月以前就准备写篇关于volatile关键字的博客，一直没有动笔，期间看了大量的文章，发现一个小小volatile关键字竟然涉及JMM（Java memory model），JVM（Java virtual machine），Java多线程同步与安全各个方面的知识，写起了非常的困难，后面附带的参考文献仅仅是我看过文献的一部分。</p>
-<hr>
-<h2 id="Java-memory-model（Java内存模型）"><a href="#Java-memory-model（Java内存模型）" class="headerlink" title="Java memory model（Java内存模型）"></a><strong>Java memory model（Java内存模型）</strong></h2><p>在讲volatile关键字之前必须先了解一下Java内存模型，如果不了解Java内存模型volatile关键字无从讲起。先看看下面的图。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><a id="more"></a></h2><h2 id="Java-memory-model（Java内存模型）"><a href="#Java-memory-model（Java内存模型）" class="headerlink" title="Java memory model（Java内存模型）"></a><strong>Java memory model（Java内存模型）</strong></h2><p>在讲volatile关键字之前必须先了解一下Java内存模型，如果不了解Java内存模型volatile关键字无从讲起。先看看下面的图。</p>
 <p><img src="http://img.blog.csdn.net/20170612150920693?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzMwOTg3MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 <p>由上图可以看出来，在JMM中内存分为两部分一个是<strong>Main Memory（主内存）</strong>另一个是<strong>Working Memory（工作内存）</strong>。</p>
 <p><strong>Main Memory（主内存）：</strong>主要存放Variable，此处的变量（Variable）与Java编程中所说的变量有所区别，它包括了<strong>实例字段</strong>、 <strong>静态字段</strong>和<strong>构成数组对象的元素</strong>，但不包括局部变量与方法参数，因为后者是线程私有的，不会被共享，自然就不会存在竞争问题。 Java内存模型规定了所有的变量都存储在主内存（Main Memory）中（此处的主内存与介绍物理硬件时的主内存名字一样，两者也可以互相类比，但此处仅是虚拟机内存的一部分）。</p>
@@ -689,7 +688,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-memory-model（Java内存模型）"><span class="nav-number">2.</span> <span class="nav-text">Java memory model（Java内存模型）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存间交互操作"><span class="nav-number">3.</span> <span class="nav-text">内存间交互操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发原则"><span class="nav-number">4.</span> <span class="nav-text">并发原则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-Volatile-Keyword"><span class="nav-number"></span> <span class="nav-text">Java Volatile Keyword</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile确保可见性"><span class="nav-number">1.</span> <span class="nav-text">volatile确保可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile确保有序性"><span class="nav-number">2.</span> <span class="nav-text">volatile确保有序性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile不能保证原子性"><span class="nav-number">3.</span> <span class="nav-text">volatile不能保证原子性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number"></span> <span class="nav-text">参考文献</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-memory-model（Java内存模型）"><span class="nav-number">3.</span> <span class="nav-text">Java memory model（Java内存模型）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存间交互操作"><span class="nav-number">4.</span> <span class="nav-text">内存间交互操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发原则"><span class="nav-number">5.</span> <span class="nav-text">并发原则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-Volatile-Keyword"><span class="nav-number"></span> <span class="nav-text">Java Volatile Keyword</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile确保可见性"><span class="nav-number">1.</span> <span class="nav-text">volatile确保可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile确保有序性"><span class="nav-number">2.</span> <span class="nav-text">volatile确保有序性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile不能保证原子性"><span class="nav-number">3.</span> <span class="nav-text">volatile不能保证原子性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number"></span> <span class="nav-text">参考文献</span></a></div>
             
 
           </div>
