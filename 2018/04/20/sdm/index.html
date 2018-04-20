@@ -91,7 +91,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/04/20/sdm/sdm/1.png">
 <meta property="og:image" content="http://yoursite.com/2018/04/20/sdm/sdm/2.png">
 <meta property="og:image" content="http://yoursite.com/2018/04/20/sdm/sdm/3.png">
-<meta property="og:updated_time" content="2018-04-20T06:51:35.056Z">
+<meta property="og:updated_time" content="2018-04-20T06:52:54.856Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sdm">
 <meta name="twitter:description" content="1.概述简要介绍：这篇文章主要提出了一种名为SDM（Supervised Descent Method）的方法，用来最小化非线性最小二乘（Non-linear Least Squares）目标函数，即目标函数是均方误差。SDM方法通过学习得到一系列下降的方向和该方向上的尺度，使得目标函数以非常快的速度收敛到最小值，回避了求解Jacobian矩阵和Hessian矩阵的问题。下面开始详细介绍，我补充了">
@@ -408,7 +408,7 @@
       
 
       
-        <p>1.概述<br>简要介绍：这篇文章主要提出了一种名为SDM（Supervised Descent Method）的方法，用来最小化非线性最小二乘（Non-linear Least Squares）目标函数，即目标函数是均方误差。SDM方法通过学习得到一系列下降的方向和该方向上的尺度，使得目标函数以非常快的速度收敛到最小值，回避了求解Jacobian矩阵和Hessian矩阵的问题。下面开始详细介绍，我补充了文章中只给出结果的推导过程，并且稍微调整了一下文章中牛顿步的推导过程。<br>2.从牛顿步说起<br>数值优化在很多领域都有很重要的应用，计算机视觉中很多重要的问题比如（行人跟踪、人脸对齐等）都可以化成非线性优化问题来解决。解决非线性优化的方法有很多，其中非常常用的有基于一阶的或者是二阶的优化方法，比如梯度下降方法、牛顿步、LM算法等等。尽管很多年过去了，在二阶导可求得情况下，牛顿步仍然被认为是一个非常优秀的算法。<br>那么什么是牛顿步方法呢？下面简单介绍一下牛顿步，后面还会详细推导牛顿步。<br>牛顿步：在Hessian矩阵正定的情况下，极小值可以通过求解线性方程组来迭代求解。给定一个初始的估计值x0∈Rp×1，牛顿步的更新迭代公式如下：<br>xk+1=xk−H−1(xk)Jf(xk)(1)</p>
+        <p>1.概述<br>简要介绍：这篇文章主要提出了一种名为SDM（Supervised Descent Method）的方法，用来最小化非线性最小二乘（Non-linear Least Squares）目标函数，即目标函数是均方误差。SDM方法通过学习得到一系列下降的方向和该方向上的尺度，使得目标函数以非常快的速度收敛到最小值，回避了求解Jacobian矩阵和Hessian矩阵的问题。下面开始详细介绍，我补充了文章中只给出结果的推导过程，并且稍微调整了一下文章中牛顿步的推导过程。<br><a id="more"></a><br>2.从牛顿步说起<br>数值优化在很多领域都有很重要的应用，计算机视觉中很多重要的问题比如（行人跟踪、人脸对齐等）都可以化成非线性优化问题来解决。解决非线性优化的方法有很多，其中非常常用的有基于一阶的或者是二阶的优化方法，比如梯度下降方法、牛顿步、LM算法等等。尽管很多年过去了，在二阶导可求得情况下，牛顿步仍然被认为是一个非常优秀的算法。<br>那么什么是牛顿步方法呢？下面简单介绍一下牛顿步，后面还会详细推导牛顿步。<br>牛顿步：在Hessian矩阵正定的情况下，极小值可以通过求解线性方程组来迭代求解。给定一个初始的估计值x0∈Rp×1，牛顿步的更新迭代公式如下：<br>xk+1=xk−H−1(xk)Jf(xk)(1)</p>
 <p>其中H−1(xk)∈Rp×p是在xk点的Hessian矩阵,Jf(xk)∈Rp×1是 在xk点的 Jacobian矩阵。<br>牛顿步方法有两个主要优点： </p>
 <ol>
 <li>如果牛顿步可以收敛，那么它的收敛速度是二次的，收敛速度非常快。 </li>
